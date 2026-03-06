@@ -29,7 +29,7 @@ const figures = [
     economic: -5,
     social: -7,
     description: 'South African anti-apartheid revolutionary and president who led the transition from racial segregation to multiracial democracy, championing reconciliation and human rights.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/0/02/Nelson_Mandela_1994.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/1/14/Nelson_Mandela-2008_%28edit%29.jpg',
   },
   {
     id: 'sanders',
@@ -45,7 +45,7 @@ const figures = [
     economic: -6.5,
     social: -5.5,
     description: 'Former UK Labour leader who championed public ownership, anti-austerity economics, nuclear disarmament, and Palestinian rights.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Jeremy_Corbyn_closeup.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Official_portrait_of_Jeremy_Corbyn_crop_2.jpg',
   },
   {
     id: 'whitlam',
@@ -61,7 +61,7 @@ const figures = [
     economic: -5.5,
     social: -4.5,
     description: 'Swedish social democratic prime minister who expanded the welfare state, championed international solidarity, and opposed both the Vietnam War and apartheid.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Olof_Palme_%281969%29.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Olof_Palme_1968.JPG',
   },
   {
     id: 'ardern',
@@ -69,7 +69,7 @@ const figures = [
     economic: -3.5,
     social: -5,
     description: 'New Zealand prime minister known for compassionate crisis leadership, progressive social policies, and swift gun reform following the Christchurch attacks.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Jacinda_Ardern_at_the_University_of_Auckland_%28cropped%29.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Jacinda_Ardern%2C_2017_%28cropped%29.jpg',
   },
   {
     id: 'albanese',
@@ -141,7 +141,7 @@ const figures = [
     economic: 7,
     social: 5,
     description: 'U.S. president who championed supply-side economics, massive tax cuts, deregulation, and a strong anti-communist foreign policy during the Cold War.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Official_Portrait_of_President_Reagan_1981.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Official_Portrait_of_President_Reagan_1981-cropped.jpg',
   },
   {
     id: 'hayek',
