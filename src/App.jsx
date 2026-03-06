@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { getSession } from './utils/authStore';
 import CookieConsent from './components/CookieConsent';
+import { Analytics } from '@vercel/analytics/react';
 
 // Eagerly load core pages
 import LandingPage from './components/LandingPage';
@@ -108,6 +109,7 @@ export default function App() {
       </footer>
 
       <CookieConsent />
+      <Analytics />
 
       <style>{`
         .app { min-height: 100vh; display: flex; flex-direction: column; }
