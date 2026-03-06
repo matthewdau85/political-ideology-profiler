@@ -4,6 +4,25 @@ import {
   ResponsiveContainer, Tooltip,
 } from 'recharts';
 
+function CustomAngleTick({ payload, x, y, textAnchor }) {
+  const words = payload.value.split(' ');
+  return (
+    <text
+      x={x} y={y} textAnchor={textAnchor}
+      fontSize={10} fontFamily="var(--font-mono)" fill="var(--color-text-secondary)"
+    >
+      {words.length > 1 ? (
+        <>
+          <tspan x={x} dy={0}>{words[0]}</tspan>
+          <tspan x={x} dy={12}>{words.slice(1).join(' ')}</tspan>
+        </>
+      ) : (
+        <tspan>{payload.value}</tspan>
+      )}
+    </text>
+  );
+}
+
 export default function RadarAnalysis({ radarScores = [], secondaryScores = null, labels = ['You', 'Comparison'] }) {
   if (!radarScores.length) return null;
 
@@ -16,13 +35,13 @@ export default function RadarAnalysis({ radarScores = [], secondaryScores = null
     : radarScores;
 
   return (
-    <div style={{ width: '100%', height: 350 }}>
+    <div style={{ width: '100%', height: 380 }}>
       <ResponsiveContainer>
-        <RadarChart data={chartData}>
+        <RadarChart data={chartData} outerRadius="70%">
           <PolarGrid stroke="var(--color-border)" />
           <PolarAngleAxis
             dataKey="dimension"
-            tick={{ fontSize: 11, fontFamily: 'var(--font-mono)', fill: 'var(--color-text-secondary)' }}
+            tick={<CustomAngleTick />}
           />
           <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
           <Tooltip

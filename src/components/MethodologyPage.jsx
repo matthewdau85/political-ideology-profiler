@@ -54,7 +54,7 @@ export default function MethodologyPage() {
       </div>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
-        <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Cluster Classification</h2>
+        <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Type Classification</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
           You are matched to one of eight political personality types based on how close your
           scores are to each type's center point. Types are defined by economic and social ranges
@@ -62,7 +62,7 @@ export default function MethodologyPage() {
           how closely your position matches that type.
         </p>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          The eight clusters span the full political spectrum: Democratic Socialist, Structural
+          The eight types span the full political spectrum: Democratic Socialist, Structural
           Social Democrat, Progressive Liberal, Technocratic Liberal, Market Liberal, Conservative
           Liberal, Traditional Conservative, and Nationalist Populist.
         </p>

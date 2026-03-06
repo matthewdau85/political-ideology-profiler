@@ -104,7 +104,7 @@ export default function AdminDashboard() {
       {/* Cluster distribution */}
       {clusterData.length > 0 && (
         <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
-          <h3 style={{ marginBottom: 'var(--spacing-lg)' }}>Cluster Distribution</h3>
+          <h3 style={{ marginBottom: 'var(--spacing-lg)' }}>Type Distribution</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-xl)' }}>
             <div>
               {clusterData.map((c, i) => (

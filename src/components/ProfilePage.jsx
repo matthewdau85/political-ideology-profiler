@@ -95,7 +95,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="privacy-notice">
-          Your email is used only for authentication. All quiz data is stored separately and anonymized.
+          Your email is used only for authentication and is never linked to your quiz results. All quiz data is anonymized.
           You can delete your account and all associated data at any time.
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function ProfilePage() {
           <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-lg)' }}>
               <div>
-                <span className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Cluster</span>
+                <span className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Type</span>
                 <h3 style={{ fontSize: 22 }}>{profile.latestCluster}</h3>
               </div>
               <div>

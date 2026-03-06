@@ -1,6 +1,18 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import questions, { sections } from '../data/questions';
+
+// Fisher-Yates shuffle creating an index map for each question
+function buildShuffledOrders(qs) {
+  return qs.map(q => {
+    const indices = q.answers.map((_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return indices;
+  });
+}
 import { calculateResults, calculateRadarScores, findClosestFigures, deriveTopIssues } from '../utils/calcResults';
 import { classifyCluster } from '../data/clusters';
 import figures from '../data/figures';
@@ -38,9 +50,13 @@ export default function QuizPage() {
   const [showCountry, setShowCountry] = useState(true);
   const navigate = useNavigate();
 
+  // Shuffle answer order once per quiz session
+  const shuffledOrders = useMemo(() => buildShuffledOrders(questions), []);
+
   const question = questions[currentQ];
   const section = question?.section;
   const progress = ((currentQ) / questions.length) * 100;
+  const currentOrder = shuffledOrders[currentQ];
 
   const finishQuiz = useCallback((finalAnswers) => {
     trackEvent(Events.QUIZ_COMPLETED);
@@ -111,10 +127,12 @@ export default function QuizPage() {
   const handleNext = useCallback(() => {
     if (selectedAnswer === null) return;
 
-    const answer = question.answers[selectedAnswer];
+    // Map display position back to original answer
+    const originalIndex = currentOrder[selectedAnswer];
+    const answer = question.answers[originalIndex];
     const newAnswers = [...answers, {
       questionId: question.id,
-      answerIndex: selectedAnswer,
+      answerIndex: originalIndex,
       economic: answer.economic,
       social: answer.social,
       importance,
@@ -138,7 +156,7 @@ export default function QuizPage() {
     setCurrentQ(currentQ + 1);
     setSelectedAnswer(null);
     setImportance('Medium');
-  }, [selectedAnswer, importance, currentQ, answers, question, finishQuiz]);
+  }, [selectedAnswer, importance, currentQ, answers, question, currentOrder, finishQuiz]);
 
   if (showCountry) {
     return (
@@ -296,13 +314,13 @@ export default function QuizPage() {
         <h2 className="quiz-question">{question.text}</h2>
 
         <div className="quiz-answers">
-          {question.answers.map((ans, i) => (
+          {currentOrder.map((origIdx, displayIdx) => (
             <button
-              key={i}
-              className={`quiz-answer ${selectedAnswer === i ? 'selected' : ''}`}
-              onClick={() => setSelectedAnswer(i)}
+              key={origIdx}
+              className={`quiz-answer ${selectedAnswer === displayIdx ? 'selected' : ''}`}
+              onClick={() => setSelectedAnswer(displayIdx)}
             >
-              {ans.text}
+              {question.answers[origIdx].text}
             </button>
           ))}
         </div>
