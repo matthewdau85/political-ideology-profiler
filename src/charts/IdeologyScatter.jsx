@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, ReferenceLine, Label,
+  ResponsiveContainer, ReferenceLine,
 } from 'recharts';
 import figures from '../data/figures';
 
@@ -55,25 +55,28 @@ export default function IdeologyScatter({ economic, social, closestFigures = [],
   }));
 
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <ResponsiveContainer>
-        <ScatterChart margin={{ top: 20, right: 40, bottom: 20, left: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-          <XAxis type="number" dataKey="x" domain={[-10, 10]} tickCount={5} fontSize={11} fontFamily="var(--font-mono)">
-            <Label value="Left-leaning" position="insideLeft" offset={10} fontSize={10} fill="var(--color-text-secondary)" />
-            <Label value="Right-leaning" position="insideRight" offset={10} fontSize={10} fill="var(--color-text-secondary)" />
-          </XAxis>
-          <YAxis type="number" dataKey="y" domain={[-10, 10]} tickCount={5} fontSize={11} fontFamily="var(--font-mono)">
-            <Label value="Progressive" position="insideBottom" offset={10} fontSize={10} fill="var(--color-text-secondary)" angle={-90} />
-            <Label value="Conservative" position="insideTop" offset={10} fontSize={10} fill="var(--color-text-secondary)" angle={-90} />
-          </YAxis>
-          <ReferenceLine x={0} stroke="var(--color-border)" strokeWidth={1} />
-          <ReferenceLine y={0} stroke="var(--color-border)" strokeWidth={1} />
-          <Tooltip content={<CustomTooltip />} />
-          <Scatter data={figureData} shape={<CustomDot />} />
-          <Scatter data={userData} shape={<CustomDot />} />
-        </ScatterChart>
-      </ResponsiveContainer>
+    <div style={{ width: '100%' }}>
+      <div style={{ height: 400 }}>
+        <ResponsiveContainer>
+          <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+            <XAxis type="number" dataKey="x" domain={[-10, 10]} tickCount={5} fontSize={11} fontFamily="var(--font-mono)" />
+            <YAxis type="number" dataKey="y" domain={[-10, 10]} tickCount={5} fontSize={11} fontFamily="var(--font-mono)" />
+            <ReferenceLine x={0} stroke="var(--color-border)" strokeWidth={1} />
+            <ReferenceLine y={0} stroke="var(--color-border)" strokeWidth={1} />
+            <Tooltip content={<CustomTooltip />} />
+            <Scatter data={figureData} shape={<CustomDot />} />
+            <Scatter data={userData} shape={<CustomDot />} />
+          </ScatterChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="mono" style={{
+        display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap',
+        fontSize: 10, color: 'var(--color-text-secondary)', marginTop: 4,
+      }}>
+        <span>X: Left-leaning (-10) to Right-leaning (+10)</span>
+        <span>Y: Progressive (-10) to Conservative (+10)</span>
+      </div>
     </div>
   );
 }
