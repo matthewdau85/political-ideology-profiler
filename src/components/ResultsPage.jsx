@@ -86,8 +86,34 @@ export default function ResultsPage() {
       {result.radarScores?.length > 0 && (
         <section className="results-section">
           <h2 className="section-title">Your Political Dimensions</h2>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: 14, lineHeight: 1.7, marginBottom: 'var(--spacing-md)' }}>
+            Beyond the two main axes, your answers reveal seven deeper dimensions of political thinking.
+            Higher scores indicate stronger alignment with that dimension.
+          </p>
           <div className="card">
             <RadarAnalysis radarScores={result.radarScores} />
+            <div className="radar-legend">
+              {[
+                { name: 'State Capacity', desc: 'Support for a strong, active government that manages the economy and public services.' },
+                { name: 'Labour Power', desc: 'Support for workers\u2019 rights, unions, and employee influence over workplaces.' },
+                { name: 'Anti-Monopoly', desc: 'Opposition to concentrated corporate power and support for regulation or public alternatives.' },
+                { name: 'Globalism', desc: 'Openness to international cooperation, immigration, and cross-border institutions.' },
+                { name: 'Progressivism', desc: 'Support for social change, civil rights expansion, and challenging traditional norms.' },
+                { name: 'Economic Left', desc: 'Preference for redistribution, public ownership, and reducing economic inequality.' },
+                { name: 'Movement Orientation', desc: 'Inclination toward grassroots activism and systemic change over incremental reform.' },
+              ].map(d => {
+                const score = result.radarScores.find(r => r.dimension === d.name);
+                return (
+                  <div key={d.name} className="radar-legend-item">
+                    <div className="radar-legend-header">
+                      <span className="radar-legend-name">{d.name}</span>
+                      {score && <span className="mono radar-legend-score">{score.value}/100</span>}
+                    </div>
+                    <p className="radar-legend-desc">{d.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
@@ -214,6 +240,16 @@ export default function ResultsPage() {
         .cluster-item-prob { font-size: 13px; color: var(--color-text-secondary); }
         .cluster-bar-bg { height: 6px; background: var(--color-bg); border-radius: 3px; overflow: hidden; }
         .cluster-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+        .radar-legend {
+          display: grid; grid-template-columns: 1fr; gap: var(--spacing-md);
+          margin-top: var(--spacing-xl); padding-top: var(--spacing-xl);
+          border-top: 1px solid var(--color-border);
+        }
+        .radar-legend-item {}
+        .radar-legend-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+        .radar-legend-name { font-size: 14px; font-weight: 600; }
+        .radar-legend-score { font-size: 12px; color: var(--color-accent); }
+        .radar-legend-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
         .top-issues-list { padding-left: var(--spacing-lg); font-size: 14px; line-height: 2; color: var(--color-text-secondary); }
         .compare-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--spacing-lg); }
         .compare-stat { text-align: center; }
