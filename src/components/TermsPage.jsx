@@ -103,8 +103,7 @@ export default function TermsPage() {
       <div className="card">
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>10. Contact</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          For questions about these terms, contact us at the email listed on
-          our <Link to="/about" style={{ color: 'var(--color-accent)' }}>About page</Link>.
+          For questions about these terms, <Link to="/contact" style={{ color: 'var(--color-accent)' }}>contact us</Link>.
         </p>
       </div>
     </div>

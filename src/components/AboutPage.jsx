@@ -47,18 +47,11 @@ export default function AboutPage() {
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Contact</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
-          For questions, feedback, data requests, or to report issues:
+          For questions, feedback, data requests, or to report issues, use our contact form.
         </p>
-        <p style={{ fontSize: 15 }}>
-          <strong>Email:</strong>{' '}
-          <a href="mailto:contact@politicalideologyprofiler.com" style={{ color: 'var(--color-accent)' }}>
-            contact@politicalideologyprofiler.com
-          </a>
-        </p>
-        <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginTop: 'var(--spacing-md)' }}>
-          For privacy-related requests (data deletion, access requests, GDPR inquiries),
-          please include "Privacy Request" in the subject line.
-        </p>
+        <Link to="/contact" className="btn btn-primary" style={{ display: 'inline-block' }}>
+          Contact Us
+        </Link>
       </div>
 
       <div className="card">

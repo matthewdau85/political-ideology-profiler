@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { deleteAllResults } from '../utils/resultsStore';
 import { deleteAccount, getSession } from '../utils/authStore';
 
@@ -131,8 +132,7 @@ export default function PrivacyPage() {
           <li><strong>Withdraw consent</strong> — you can clear cookies at any time through your browser settings</li>
         </ul>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginTop: 'var(--spacing-md)' }}>
-          For questions about your data, contact us at the email listed on our{' '}
-          <a href="/about" style={{ color: 'var(--color-accent)' }}>About page</a>.
+          For questions about your data, <Link to="/contact" style={{ color: 'var(--color-accent)' }}>contact us</Link>.
         </p>
       </div>
 
