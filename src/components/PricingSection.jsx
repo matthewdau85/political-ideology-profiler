@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { trackEvent, Events } from '../utils/analytics';
 
 const plans = [
-  { id: 'deep_analysis', name: 'Deep Analysis', price: 5, link: '/deep-analysis', features: ['7-dimension radar analysis', 'Detailed cluster breakdown', 'Policy position mapping'] },
+  { id: 'deep_analysis', name: 'Deep Analysis', price: 5, link: '/deep-analysis', features: ['7-dimension radar analysis', 'Detailed type breakdown', 'Policy position mapping'] },
   { id: 'report', name: 'Personality Report', price: 12, link: '/deep-analysis', features: ['Downloadable PDF report', 'Full ideological profile', 'Historical comparisons', 'Reading recommendations'] },
   { id: 'country_comparison', name: 'Country Comparison', price: 5, link: '/country-comparison', features: ['5 country party comparisons', 'Closest party alignment', 'Distance scoring'] },
   { id: 'friend_comparison', name: 'Friend Comparison', price: 3, link: '/debate/new', features: ['Generate debate link', 'Side-by-side comparison', 'Overlap percentage'] },

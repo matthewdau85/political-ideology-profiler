@@ -4,7 +4,7 @@ const clusters = [
     name: 'Democratic Socialist',
     economicRange: [-10, -5.5],
     socialRange: [-10, -2],
-    description: 'You believe in fundamental economic transformation through democratic means. Public ownership of key industries, universal social programs, and deep wealth redistribution are central to your vision. You combine economic radicalism with progressive social values.',
+    description: 'You believe in fundamental economic transformation through democratic means. Public ownership of key industries, universal social programs, and deep wealth redistribution are central to your vision. You combine strong left-leaning economics with progressive social values.',
     color: '#dc2626',
     traits: ['Anti-capitalist', 'Pro-worker ownership', 'Universal programs', 'Internationalist'],
   },
@@ -67,9 +67,9 @@ const clusters = [
     name: 'Nationalist Populist',
     economicRange: [-3, 4],
     socialRange: [5, 10],
-    description: 'You prioritize national sovereignty, cultural identity, and the interests of ordinary citizens over globalist elites. You may hold economically varied positions but strongly favor social conservatism and immigration restriction.',
+    description: 'You prioritize national sovereignty, cultural identity, and the interests of ordinary citizens. You may hold economically varied positions but strongly favor social conservatism and stricter immigration policies.',
     color: '#78350f',
-    traits: ['Nationalist', 'Anti-elite', 'Immigration-restrictionist', 'Sovereigntist'],
+    traits: ['Nationalist', 'Populist', 'Sovereignty-focused', 'Traditionalist'],
   },
 ];
 

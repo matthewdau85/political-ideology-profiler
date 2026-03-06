@@ -125,7 +125,7 @@ export default function ProfilePage() {
           <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-lg)' }}>
               <div>
-                <span className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Cluster</span>
+                <span className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Type</span>
                 <h3 style={{ fontSize: 22 }}>{profile.latestCluster}</h3>
               </div>
               <div>
