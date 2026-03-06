@@ -28,7 +28,7 @@ export default function ResultsPage() {
 
   const closestFiguresFull = (result.closestFigures || []).map(cf => {
     const full = figures.find(f => f.id === cf.id || f.name === cf.name);
-    return { ...full, ...cf };
+    return full ? { ...full, ...cf } : cf;
   });
 
   return (

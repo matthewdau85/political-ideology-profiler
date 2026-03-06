@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateResults, calculateRadarScores, findClosestFigures, classifyCluster } from './calcResults';
+import { calculateResults, calculateRadarScores, findClosestFigures } from './calcResults';
 import { classifyCluster as classify } from '../data/clusters';
 
 describe('calculateResults', () => {
