@@ -1,20 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getDebateById, saveDebate, getPermalink } from '../utils/resultsStore';
+import { getDebateById, saveDebate } from '../utils/resultsStore';
 import { trackEvent, Events } from '../utils/analytics';
 import { generateId } from '../utils/math';
 
-export default function DebatePage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [copied, setCopied] = useState(false);
-
-  // Creating a new debate
-  if (id === 'new') {
-    return <NewDebate />;
-  }
-
+function DebateView({ id }) {
   const debate = useMemo(() => getDebateById(id), [id]);
+  const navigate = useNavigate();
 
   if (!debate) {
     return (
@@ -28,7 +20,6 @@ export default function DebatePage() {
     );
   }
 
-  // If debate has both users, show comparison
   if (debate.user1 && debate.user2) {
     return (
       <div className="container" style={{ padding: 'var(--spacing-3xl) 0', textAlign: 'center' }}>
@@ -41,11 +32,7 @@ export default function DebatePage() {
     );
   }
 
-  // Waiting for participant 2 or showing join option
-  const debateUrl = `${window.location.origin}/debate/${id}`;
-
   if (debate.user1 && !debate.user2) {
-    // Second participant needs to take the quiz
     return (
       <div className="container" style={{ padding: 'var(--spacing-3xl) 0', maxWidth: 560 }}>
         <div className="card" style={{ textAlign: 'center' }}>
@@ -59,7 +46,6 @@ export default function DebatePage() {
           <button
             className="btn btn-primary"
             onClick={() => {
-              // Store debate ID so quiz can link back
               sessionStorage.setItem('active_debate', id);
               navigate('/quiz');
             }}
@@ -75,12 +61,11 @@ export default function DebatePage() {
 }
 
 function NewDebate() {
-  const [step, setStep] = useState('select'); // select | created
+  const [step, setStep] = useState('select');
   const [debateId, setDebateId] = useState('');
   const [resultId, setResultId] = useState('');
   const [copied, setCopied] = useState(false);
 
-  // Get available results to link to the debate
   const results = useMemo(() => {
     try {
       const all = JSON.parse(localStorage.getItem('ideology_permalinks') || '{}');
@@ -208,4 +193,14 @@ function NewDebate() {
       </div>
     </div>
   );
+}
+
+export default function DebatePage() {
+  const { id } = useParams();
+
+  if (id === 'new') {
+    return <NewDebate />;
+  }
+
+  return <DebateView id={id} />;
 }

@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { deleteAllResults } from '../utils/resultsStore';
 import { deleteAccount, getSession } from '../utils/authStore';
-import { useState } from 'react';
 
 export default function PrivacyPage() {
   const [deleted, setDeleted] = useState(false);

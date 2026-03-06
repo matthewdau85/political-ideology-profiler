@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { trackEvent, Events } from '../utils/analytics';
 
 const plans = [
-  { id: 'deep_analysis', name: 'Deep Analysis', price: 5, features: ['7-dimension radar analysis', 'Detailed cluster breakdown', 'Policy position mapping'] },
-  { id: 'report', name: 'Personality Report', price: 12, features: ['Downloadable PDF report', 'Full ideological profile', 'Historical comparisons', 'Reading recommendations'] },
-  { id: 'country_comparison', name: 'Country Comparison', price: 5, features: ['5 country party comparisons', 'Closest party alignment', 'Distance scoring'] },
-  { id: 'friend_comparison', name: 'Friend Comparison', price: 3, features: ['Generate debate link', 'Side-by-side comparison', 'Overlap percentage'] },
-  { id: 'premium_membership', name: 'Premium Membership', price: 25, yearly: true, featured: true, features: ['All premium features', 'Ideology evolution tracking', 'Unlimited debate links', 'Priority support'] },
+  { id: 'deep_analysis', name: 'Deep Analysis', price: 5, link: '/deep-analysis', features: ['7-dimension radar analysis', 'Detailed cluster breakdown', 'Policy position mapping'] },
+  { id: 'report', name: 'Personality Report', price: 12, link: '/deep-analysis', features: ['Downloadable PDF report', 'Full ideological profile', 'Historical comparisons', 'Reading recommendations'] },
+  { id: 'country_comparison', name: 'Country Comparison', price: 5, link: '/country-comparison', features: ['5 country party comparisons', 'Closest party alignment', 'Distance scoring'] },
+  { id: 'friend_comparison', name: 'Friend Comparison', price: 3, link: '/debate/new', features: ['Generate debate link', 'Side-by-side comparison', 'Overlap percentage'] },
+  { id: 'premium_membership', name: 'Premium Membership', price: 25, yearly: true, featured: true, link: '/deep-analysis', features: ['All premium features', 'Ideology evolution tracking', 'Unlimited debate links', 'Priority support'] },
 ];
 
 export default function PricingSection() {
@@ -45,13 +46,14 @@ export default function PricingSection() {
             <ul style={{ listStyle: 'none', fontSize: 13, color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-lg)', lineHeight: 2 }}>
               {plan.features.map((f, i) => <li key={i}>{f}</li>)}
             </ul>
-            <button
+            <Link
+              to={plan.link}
               className={`btn btn-sm ${plan.featured ? 'btn-accent' : 'btn-secondary'}`}
               style={{ width: '100%' }}
               onClick={() => trackEvent(Events.PREMIUM_CLICKED, { plan: plan.id })}
             >
               Get Started
-            </button>
+            </Link>
           </div>
         ))}
       </div>

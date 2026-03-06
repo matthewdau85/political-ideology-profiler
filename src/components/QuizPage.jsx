@@ -4,12 +4,28 @@ import questions, { sections } from '../data/questions';
 import { calculateResults, calculateRadarScores, findClosestFigures, deriveTopIssues } from '../utils/calcResults';
 import { classifyCluster } from '../data/clusters';
 import figures from '../data/figures';
-import { saveResult, savePermalink } from '../utils/resultsStore';
+import { saveResult, savePermalink, updateDebate, getDebateById } from '../utils/resultsStore';
 import { saveUserResult, getSession } from '../utils/authStore';
 import { trackEvent, Events } from '../utils/analytics';
 import AdSlot from './AdSlot';
 
 const IMPORTANCE_OPTIONS = ['Low', 'Medium', 'High'];
+
+function generateDebateSummary(result, debateId) {
+  const debate = getDebateById(debateId);
+  if (!debate?.user1) return null;
+  const u1 = debate.user1;
+  const u2 = result;
+  const eDiff = Math.abs(u1.economic - u2.economic);
+  const sDiff = Math.abs(u1.social - u2.social);
+  if (eDiff < 2 && sDiff < 2) {
+    return `This debate reflects broad ideological alignment between a ${u1.cluster} and a ${u2.cluster}.`;
+  }
+  if (eDiff > sDiff) {
+    return `This debate reflects a conflict between ${u1.cluster.toLowerCase()} and ${u2.cluster.toLowerCase()} — primarily an economic disagreement.`;
+  }
+  return `This debate reflects a conflict between ${u1.cluster.toLowerCase()} and ${u2.cluster.toLowerCase()} — primarily a social and cultural disagreement.`;
+}
 
 export default function QuizPage() {
   const [currentQ, setCurrentQ] = useState(0);
@@ -24,6 +40,64 @@ export default function QuizPage() {
   const question = questions[currentQ];
   const section = question?.section;
   const progress = ((currentQ) / questions.length) * 100;
+
+  const finishQuiz = useCallback((finalAnswers) => {
+    trackEvent(Events.QUIZ_COMPLETED);
+
+    const { economic, social } = calculateResults(finalAnswers);
+    const radarScores = calculateRadarScores(finalAnswers);
+    const closestFigs = findClosestFigures(economic, social, figures);
+    const clustersResult = classifyCluster(economic, social);
+    const topIssues = deriveTopIssues(finalAnswers, questions);
+    const topCluster = clustersResult[0];
+
+    const resultId = crypto.randomUUID?.() || Math.random().toString(36).slice(2, 10);
+
+    const resultData = {
+      id: resultId,
+      economic,
+      social,
+      cluster: topCluster.name,
+      clusterColor: topCluster.color,
+      clusterDescription: topCluster.description,
+      clusters: clustersResult,
+      closestFigures: closestFigs.map(f => ({ name: f.name, id: f.id, distance: f.distance, description: f.description })),
+      radarScores,
+      topIssues,
+      country: country || 'Unknown',
+      timestamp: new Date().toISOString(),
+      answers: finalAnswers,
+    };
+
+    saveResult(resultData);
+    savePermalink(resultId, resultData);
+
+    const session = getSession();
+    if (session) {
+      saveUserResult(resultData);
+    }
+
+    // Check if this quiz is part of a debate challenge
+    const activeDebateId = sessionStorage.getItem('active_debate');
+    if (activeDebateId) {
+      sessionStorage.removeItem('active_debate');
+      const debateSummary = generateDebateSummary(resultData, activeDebateId);
+      updateDebate(activeDebateId, {
+        user2: {
+          economic: resultData.economic,
+          social: resultData.social,
+          cluster: resultData.cluster,
+          radarScores: resultData.radarScores,
+          topIssues: resultData.topIssues,
+        },
+        summary: debateSummary,
+      });
+      navigate(`/compare/${activeDebateId}`);
+      return;
+    }
+
+    navigate(`/results/${resultId}`);
+  }, [country, navigate]);
 
   const handleNext = useCallback(() => {
     if (selectedAnswer === null) return;
@@ -55,46 +129,7 @@ export default function QuizPage() {
     setCurrentQ(currentQ + 1);
     setSelectedAnswer(null);
     setImportance('Medium');
-  }, [selectedAnswer, importance, currentQ, answers, question]);
-
-  const finishQuiz = (finalAnswers) => {
-    trackEvent(Events.QUIZ_COMPLETED);
-
-    const { economic, social } = calculateResults(finalAnswers);
-    const radarScores = calculateRadarScores(finalAnswers);
-    const closestFigs = findClosestFigures(economic, social, figures);
-    const clusters = classifyCluster(economic, social);
-    const topIssues = deriveTopIssues(finalAnswers, questions);
-    const topCluster = clusters[0];
-
-    const resultId = crypto.randomUUID?.() || Math.random().toString(36).slice(2, 10);
-
-    const resultData = {
-      id: resultId,
-      economic,
-      social,
-      cluster: topCluster.name,
-      clusterColor: topCluster.color,
-      clusterDescription: topCluster.description,
-      clusters,
-      closestFigures: closestFigs.map(f => ({ name: f.name, id: f.id, distance: f.distance, description: f.description })),
-      radarScores,
-      topIssues,
-      country: country || 'Unknown',
-      timestamp: new Date().toISOString(),
-      answers: finalAnswers,
-    };
-
-    saveResult(resultData);
-    savePermalink(resultId, resultData);
-
-    const session = getSession();
-    if (session) {
-      saveUserResult(resultData);
-    }
-
-    navigate(`/results/${resultId}`);
-  };
+  }, [selectedAnswer, importance, currentQ, answers, question, finishQuiz]);
 
   if (showCountry) {
     return (

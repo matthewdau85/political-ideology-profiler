@@ -21,13 +21,21 @@ const COUNTRY_MAP = {
   'New Zealand': 'New Zealand',
 };
 
-function getColor(value) {
+function getEconomicColor(value) {
   if (value === null || value === undefined) return '#e2e0dc';
-  // Economic: blue (left) to red (right)
-  const t = (value + 10) / 20; // normalize 0-1
+  const t = (value + 10) / 20;
   const r = Math.round(37 + t * (220 - 37));
   const g = Math.round(99 + (1 - Math.abs(t - 0.5) * 2) * 50);
   const b = Math.round(235 + t * (38 - 235));
+  return `rgb(${r},${g},${b})`;
+}
+
+function getSocialColor(value) {
+  if (value === null || value === undefined) return '#e2e0dc';
+  const t = (value + 10) / 20;
+  const r = Math.round(124 + t * (217 - 124));
+  const g = Math.round(58 + (1 - Math.abs(t - 0.5) * 2) * 50);
+  const b = Math.round(237 + t * (6 - 237));
   return `rgb(${r},${g},${b})`;
 }
 
@@ -77,7 +85,7 @@ export default function GlobalIdeologyMap() {
       </div>
 
       {/* Map */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 'var(--spacing-xl)' }}>
+      <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 'var(--spacing-xl)', position: 'relative' }}>
         <Suspense fallback={
           <div style={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}>
             Loading map...
@@ -101,7 +109,7 @@ export default function GlobalIdeologyMap() {
                       <Geography
                         key={geo.rsmKey}
                         geography={geo}
-                        fill={getColor(value)}
+                        fill={metric === 'economic' ? getEconomicColor(value) : getSocialColor(value)}
                         stroke="#faf9f6"
                         strokeWidth={0.5}
                         style={{
@@ -127,7 +135,7 @@ export default function GlobalIdeologyMap() {
             padding: 'var(--spacing-sm) var(--spacing-md)', fontSize: 13, pointerEvents: 'none',
           }}>
             <strong>{hoveredCountry.name}</strong>
-            {hoveredCountry.count && (
+            {hoveredCountry.count > 0 && (
               <div className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
                 Responses: {hoveredCountry.count} | Econ: {hoveredCountry.avgEconomic} | Social: {hoveredCountry.avgSocial}
               </div>

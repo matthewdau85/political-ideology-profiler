@@ -110,6 +110,15 @@ export function getDebateById(id) {
   return getAllDebates().find(d => d.id === id) || null;
 }
 
+export function updateDebate(id, updates) {
+  const debates = getAllDebates();
+  const index = debates.findIndex(d => d.id === id);
+  if (index === -1) return null;
+  debates[index] = { ...debates[index], ...updates };
+  localStorage.setItem(DEBATES_KEY, JSON.stringify(debates));
+  return debates[index];
+}
+
 // === Permalink storage ===
 export function savePermalink(id, resultData) {
   const links = getAllPermalinks();

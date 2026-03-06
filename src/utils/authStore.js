@@ -58,7 +58,7 @@ export function getSession() {
 }
 
 function setSession(user) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+  localStorage.setItem(SESSION_KEY, JSON.stringify(sanitizeUser(user)));
 }
 
 function sanitizeUser(user) {
