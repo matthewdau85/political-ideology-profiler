@@ -142,8 +142,8 @@ export default function ResultsPage() {
         </section>
       )}
 
-      {/* Top issues */}
-      {result.topIssues?.length > 0 && (
+      {/* Top issues — only show if user actively used importance weighting */}
+      {result.importanceUsed && result.topIssues?.length > 0 && (
         <section className="results-section">
           <h2 className="section-title">Your Top Issues</h2>
           <div className="card">

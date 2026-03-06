@@ -1,17 +1,18 @@
 import { clamp } from './math.js';
-import { importanceWeights } from '../data/questions.js';
+import { importanceWeights, convictionMultipliers } from '../data/questions.js';
 
 export function calculateResults(answers) {
-  // answers: [{ questionId, answerIndex, importance }]
+  // answers: [{ questionId, answerIndex, importance, conviction }]
   let totalEconomic = 0;
   let totalSocial = 0;
   let totalWeight = 0;
 
   for (const ans of answers) {
     const weight = importanceWeights[ans.importance] || 1;
-    totalEconomic += ans.economic * weight;
-    totalSocial += ans.social * weight;
-    totalWeight += weight;
+    const conviction = convictionMultipliers[ans.conviction] || 1;
+    totalEconomic += ans.economic * weight * conviction;
+    totalSocial += ans.social * weight * conviction;
+    totalWeight += weight * conviction;
   }
 
   const maxPossible = 3 * totalWeight; // max score per axis
@@ -43,8 +44,10 @@ export function calculateRadarScores(answers) {
   let count = 0;
   for (const ans of answers) {
     const weight = importanceWeights[ans.importance] || 1;
-    const e = ans.economic * weight;
-    const s = ans.social * weight;
+    const conviction = convictionMultipliers[ans.conviction] || 1;
+    const combined = weight * conviction;
+    const e = ans.economic * combined;
+    const s = ans.social * combined;
 
     dimensions['State Capacity'] += (-e + 3) * 0.5;
     dimensions['Labour Power'] += (-e - s * 0.3 + 3) * 0.5;
@@ -53,7 +56,7 @@ export function calculateRadarScores(answers) {
     dimensions['Progressivism'] += (-s + 3) * 0.5;
     dimensions['Economic Left'] += (-e + 3) * 0.5;
     dimensions['Movement Orientation'] += (-e - s + 6) * 0.25;
-    count += weight;
+    count += combined;
   }
 
   if (count === 0) return Object.keys(dimensions).map(k => ({ dimension: k, value: 50 }));

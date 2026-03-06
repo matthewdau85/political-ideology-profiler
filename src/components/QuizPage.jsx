@@ -23,6 +23,7 @@ import AdSlot from './AdSlot';
 import { submitAnonymousResult } from '../utils/dataCollect';
 
 const IMPORTANCE_OPTIONS = ['Low', 'Medium', 'High'];
+const CONVICTION_OPTIONS = ['Lean', 'Agree', 'Strongly Agree'];
 
 function generateDebateSummary(result, debateId) {
   const debate = getDebateById(debateId);
@@ -45,6 +46,8 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [importance, setImportance] = useState('Medium');
+  const [conviction, setConviction] = useState('Agree');
+  const [importanceEverChanged, setImportanceEverChanged] = useState(false);
   const [showPause, setShowPause] = useState(false);
   const [country, setCountry] = useState('');
   const [showCountry, setShowCountry] = useState(true);
@@ -82,6 +85,7 @@ export default function QuizPage() {
       radarScores,
       topIssues,
       country: country || 'Unknown',
+      importanceUsed: importanceEverChanged,
       timestamp: new Date().toISOString(),
       answers: finalAnswers,
     };
@@ -122,7 +126,7 @@ export default function QuizPage() {
     }
 
     navigate(`/results/${resultId}`);
-  }, [country, navigate]);
+  }, [country, importanceEverChanged, navigate]);
 
   const handleNext = useCallback(() => {
     if (selectedAnswer === null) return;
@@ -136,6 +140,7 @@ export default function QuizPage() {
       economic: answer.economic,
       social: answer.social,
       importance,
+      conviction,
     }];
     setAnswers(newAnswers);
 
@@ -145,6 +150,7 @@ export default function QuizPage() {
       setShowPause(true);
       setSelectedAnswer(null);
       setImportance('Medium');
+      setConviction('Agree');
       return;
     }
 
@@ -156,7 +162,8 @@ export default function QuizPage() {
     setCurrentQ(currentQ + 1);
     setSelectedAnswer(null);
     setImportance('Medium');
-  }, [selectedAnswer, importance, currentQ, answers, question, currentOrder, finishQuiz]);
+    setConviction('Agree');
+  }, [selectedAnswer, importance, conviction, currentQ, answers, question, currentOrder, finishQuiz]);
 
   if (showCountry) {
     return (
@@ -325,6 +332,25 @@ export default function QuizPage() {
           ))}
         </div>
 
+        {selectedAnswer !== null && (
+          <div className="quiz-conviction">
+            <label className="mono" style={{ fontSize: 12, color: 'var(--color-text-secondary)' }}>
+              How strongly do you feel about this answer?
+            </label>
+            <div className="conviction-options">
+              {CONVICTION_OPTIONS.map(opt => (
+                <button
+                  key={opt}
+                  className={`conviction-btn ${conviction === opt ? 'active' : ''}`}
+                  onClick={() => setConviction(opt)}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="quiz-importance">
           <label className="mono" style={{ fontSize: 12, color: 'var(--color-text-secondary)' }}>
             How important is this issue to you?
@@ -334,7 +360,7 @@ export default function QuizPage() {
               <button
                 key={opt}
                 className={`importance-btn ${importance === opt ? 'active' : ''}`}
-                onClick={() => setImportance(opt)}
+                onClick={() => { setImportance(opt); if (opt !== 'Medium') setImportanceEverChanged(true); }}
               >
                 {opt}
               </button>
@@ -386,6 +412,16 @@ const quizStyles = `
   .quiz-answer.selected {
     border-color: var(--color-text); background: var(--color-text);
     color: var(--color-bg);
+  }
+  .quiz-conviction { margin-bottom: var(--spacing-md); }
+  .conviction-options { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
+  .conviction-btn {
+    flex: 1; padding: 8px; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); background: transparent;
+    font-family: var(--font-mono); font-size: 13px; cursor: pointer; transition: all 0.15s;
+  }
+  .conviction-btn.active {
+    border-color: var(--color-text); background: var(--color-text); color: var(--color-bg);
   }
   .quiz-importance { margin-bottom: var(--spacing-xl); }
   .importance-options { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
