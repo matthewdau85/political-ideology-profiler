@@ -22,6 +22,7 @@ const GlobalIdeologyMap = lazy(() => import('./components/GlobalIdeologyMap'));
 const IdeologyStatsAPI = lazy(() => import('./components/IdeologyStatsAPI'));
 const PrivacyPage = lazy(() => import('./components/PrivacyPage'));
 const AboutPage = lazy(() => import('./components/AboutPage'));
+const TermsPage = lazy(() => import('./components/TermsPage'));
 
 function Loading() {
   return (
@@ -74,6 +75,7 @@ export default function App() {
             <Route path="/api/ideology-stats" element={<IdeologyStatsAPI />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="*" element={
               <div className="container" style={{ padding: 'var(--spacing-3xl) 0', textAlign: 'center' }}>
                 <h2 style={{ fontSize: 36, marginBottom: 'var(--spacing-md)' }}>Page Not Found</h2>
@@ -99,6 +101,7 @@ export default function App() {
               <Link to="/methodology">Methodology</Link>
               <Link to="/api/ideology-stats">Stats</Link>
               <Link to="/privacy">Privacy</Link>
+              <Link to="/terms">Terms</Link>
             </div>
           </div>
         </div>

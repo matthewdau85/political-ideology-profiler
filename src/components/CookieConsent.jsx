@@ -35,8 +35,8 @@ export default function CookieConsent() {
         gap: 'var(--spacing-md)', flexWrap: 'wrap',
       }}>
         <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', margin: 0, flex: 1, minWidth: 240 }}>
-          This site uses cookies for advertising through Google AdSense. Third-party cookies
-          may be used to show you personalized ads.{' '}
+          This site uses cookies for advertising and sends anonymized quiz scores to our
+          server to build aggregate statistics. No personal information is collected.{' '}
           <a href="/privacy" style={{ color: 'var(--color-accent)' }}>Learn more</a>
         </p>
         <div style={{ display: 'flex', gap: 'var(--spacing-sm)', flexShrink: 0 }}>

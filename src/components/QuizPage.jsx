@@ -8,6 +8,7 @@ import { saveResult, savePermalink, updateDebate, getDebateById } from '../utils
 import { saveUserResult, getSession } from '../utils/authStore';
 import { trackEvent, Events } from '../utils/analytics';
 import AdSlot from './AdSlot';
+import { submitAnonymousResult } from '../utils/dataCollect';
 
 const IMPORTANCE_OPTIONS = ['Low', 'Medium', 'High'];
 
@@ -71,6 +72,14 @@ export default function QuizPage() {
 
     saveResult(resultData);
     savePermalink(resultId, resultData);
+
+    // Send anonymized data to server (only if user consented)
+    submitAnonymousResult({
+      economic: resultData.economic,
+      social: resultData.social,
+      cluster: resultData.cluster,
+      country: resultData.country,
+    });
 
     const session = getSession();
     if (session) {

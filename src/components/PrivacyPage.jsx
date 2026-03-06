@@ -25,7 +25,9 @@ export default function PrivacyPage() {
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>What We Collect</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
           The Political Ideology Profiler collects only the minimum data necessary to function.
-          All quiz results are <strong>anonymized</strong> and stored locally in your browser.
+          Your full quiz results are stored locally in your browser. If you accept cookies,
+          we also send a small amount of <strong>anonymized</strong> data to our server to
+          build aggregate statistics (see "Data We Send to Our Server" below).
         </p>
         <h3 style={{ fontSize: 16, marginBottom: 'var(--spacing-sm)' }}>Data we store locally:</h3>
         <ul style={{ color: 'var(--color-text-secondary)', lineHeight: 2, paddingLeft: 'var(--spacing-lg)', fontSize: 14 }}>
@@ -84,22 +86,36 @@ export default function PrivacyPage() {
       </div>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
-        <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Data Sharing</h2>
-        <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          Your quiz results are stored locally on your device and are not uploaded to any server.
-          If a backend is added in the future, only anonymized, aggregate statistics (such as
-          average scores and type distributions) would be shared — never individual results or
-          personal information.
+        <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Data We Send to Our Server</h2>
+        <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
+          If you accept cookies, we send the following <strong>anonymized</strong> data to our server
+          when you complete the quiz. This is used solely to build aggregate statistics
+          (e.g., average scores by country):
+        </p>
+        <ul style={{ color: 'var(--color-text-secondary)', lineHeight: 2, paddingLeft: 'var(--spacing-lg)', fontSize: 14 }}>
+          <li>Your economic score (a number from -10 to +10)</li>
+          <li>Your social score (a number from -10 to +10)</li>
+          <li>Your political personality type (e.g., "Progressive Liberal")</li>
+          <li>Your country (if provided)</li>
+        </ul>
+        <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginTop: 'var(--spacing-md)' }}>
+          We do <strong>not</strong> send your individual quiz answers, your name, your email,
+          your IP address, or any other identifying information. If you decline cookies,
+          no data is sent to our server at all.
         </p>
       </div>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Data Storage</h2>
+        <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
+          <strong>On your device:</strong> Your full quiz results (including individual answers,
+          charts, and comparisons) are stored in your browser's localStorage. This data never
+          leaves your device unless you accept cookies.
+        </p>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          All quiz data is currently stored in your browser's localStorage. This means your data
-          stays on your device unless you choose to share it. In future versions with backend
-          integration, data will be stored in encrypted databases with the same anonymization
-          guarantees.
+          <strong>On our server:</strong> Only the anonymized data listed above is stored.
+          Server data is kept in an encrypted database and is used exclusively for aggregate
+          statistics. It cannot be traced back to any individual.
         </p>
       </div>
 

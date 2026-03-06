@@ -1,49 +1,67 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getStats } from '../utils/resultsStore';
 
 export default function IdeologyStatsAPI() {
-  const stats = useMemo(() => getStats(), []);
   const [copied, setCopied] = useState(false);
+  const [serverData, setServerData] = useState(null);
+  const [source, setSource] = useState('loading');
 
-  const apiResponse = {
-    status: 'ok',
-    data: {
-      totalResponses: stats.totalResponses,
-      averageEconomicScore: stats.avgEconomic,
-      averageSocialScore: stats.avgSocial,
-      clusterDistribution: stats.clusterDistribution,
-      responsesByCountry: Object.entries(stats.countryDistribution).reduce((acc, [country, data]) => {
-        acc[country] = {
-          responses: data.count,
-          averageEconomic: data.avgEconomic,
-          averageSocial: data.avgSocial,
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(json => {
+        if (json.data?.totalResponses > 0) {
+          setServerData(json);
+          setSource('server');
+        } else {
+          throw new Error('empty');
+        }
+      })
+      .catch(() => {
+        // Fall back to local stats
+        const local = getStats();
+        const localResponse = {
+          status: 'ok',
+          data: {
+            totalResponses: local.totalResponses,
+            averageEconomicScore: local.avgEconomic,
+            averageSocialScore: local.avgSocial,
+            clusterDistribution: local.clusterDistribution,
+            responsesByCountry: Object.entries(local.countryDistribution).reduce((acc, [country, d]) => {
+              acc[country] = { responses: d.count, avgEconomic: d.avgEconomic, avgSocial: d.avgSocial };
+              return acc;
+            }, {}),
+          },
+          meta: {
+            anonymized: true,
+            generatedAt: new Date().toISOString(),
+            description: 'Local preview of aggregate quiz statistics from this device.',
+          },
         };
-        return acc;
-      }, {}),
-    },
-    meta: {
-      anonymized: true,
-      generatedAt: new Date().toISOString(),
-      description: 'Local preview of aggregate quiz statistics from this device.',
-    },
-  };
+        setServerData(localResponse);
+        setSource('local');
+      });
+  }, []);
 
-  const jsonStr = JSON.stringify(apiResponse, null, 2);
+  const jsonStr = serverData ? JSON.stringify(serverData, null, 2) : 'Loading...';
 
   return (
     <div className="container" style={{ padding: 'var(--spacing-3xl) 0', maxWidth: 760 }}>
       <span className="mono" style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--color-accent)' }}>
-        Public API
+        Aggregate Statistics
       </span>
-      <h1 style={{ fontSize: 36, marginBottom: 'var(--spacing-md)' }}>Statistics Preview</h1>
+      <h1 style={{ fontSize: 36, marginBottom: 'var(--spacing-md)' }}>
+        {source === 'server' ? 'Global Statistics' : 'Statistics Preview'}
+      </h1>
       <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-xl)', lineHeight: 1.7 }}>
-        A preview of the aggregate statistics from quizzes completed on this device.
-        When a backend is added, this data will be available as a public API endpoint with anonymized, aggregate data only.
+        {source === 'server'
+          ? 'Anonymized, aggregate statistics from all quiz participants. No individual results or personal information are included.'
+          : 'A preview of aggregate statistics. Once the server is configured, this page will show data from all participants.'}
       </p>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-md)' }}>
-          <h3>GET /api/ideology-stats</h3>
+          <h3>GET /api/stats</h3>
           <button
             className="btn btn-sm btn-secondary"
             onClick={() => {
@@ -70,24 +88,24 @@ export default function IdeologyStatsAPI() {
       </div>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
-        <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Usage</h3>
+        <h3 style={{ marginBottom: 'var(--spacing-md)' }}>What's Included</h3>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
           This endpoint returns aggregate statistics only. Individual quiz responses cannot be
-          accessed through this API. Data includes:
+          accessed. Data includes:
         </p>
         <ul style={{ color: 'var(--color-text-secondary)', lineHeight: 2, paddingLeft: 'var(--spacing-lg)', fontSize: 14 }}>
-          <li>Average economic and social scores across all respondents</li>
-          <li>Distribution of ideological cluster classifications</li>
+          <li>Average economic and social scores across all participants</li>
+          <li>Distribution of political personality types</li>
           <li>Response counts and average scores by country</li>
         </ul>
       </div>
 
       <div className="card">
-        <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Note</h3>
+        <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Privacy</h3>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          This is a local preview only. The data shown reflects quizzes taken on this device.
-          A live API endpoint with cross-user aggregate statistics will be available once
-          backend infrastructure is in place. No personal information will ever be included.
+          All data is fully anonymized. No individual responses, email addresses,
+          IP addresses, or personally identifiable information are included.
+          {source === 'local' && ' Currently showing local data from this device only.'}
         </p>
       </div>
     </div>
