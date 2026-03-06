@@ -24,7 +24,7 @@ export default function IdeologyStatsAPI() {
     meta: {
       anonymized: true,
       generatedAt: new Date().toISOString(),
-      description: 'Anonymized aggregate ideology statistics from the Political Ideology Profiler.',
+      description: 'Local preview of aggregate quiz statistics from this device.',
     },
   };
 
@@ -35,10 +35,10 @@ export default function IdeologyStatsAPI() {
       <span className="mono" style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--color-accent)' }}>
         Public API
       </span>
-      <h1 style={{ fontSize: 36, marginBottom: 'var(--spacing-md)' }}>Ideology Dataset API</h1>
+      <h1 style={{ fontSize: 36, marginBottom: 'var(--spacing-md)' }}>Statistics Preview</h1>
       <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-xl)', lineHeight: 1.7 }}>
-        Anonymized, aggregate ideology statistics for journalists, researchers, and political scientists.
-        All data is fully anonymized — no individual results or personal information are included.
+        A preview of the aggregate statistics from quizzes completed on this device.
+        When a backend is added, this data will be available as a public API endpoint with anonymized, aggregate data only.
       </p>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
@@ -82,23 +82,13 @@ export default function IdeologyStatsAPI() {
         </ul>
       </div>
 
-      <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
-        <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Citation</h3>
+      <div className="card">
+        <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Note</h3>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          If you use this dataset in published research or journalism, please cite as:
+          This is a local preview only. The data shown reflects quizzes taken on this device.
+          A live API endpoint with cross-user aggregate statistics will be available once
+          backend infrastructure is in place. No personal information will ever be included.
         </p>
-        <div className="mono" style={{
-          background: 'var(--color-bg)', padding: 'var(--spacing-md)', borderRadius: 'var(--radius-md)',
-          fontSize: 12, marginTop: 'var(--spacing-md)',
-        }}>
-          Political Ideology Profiler Dataset. [Year]. Anonymized aggregate ideology statistics.
-          Available at: [URL]/api/ideology-stats
-        </div>
-      </div>
-
-      <div className="privacy-notice">
-        All data returned by this API is fully anonymized. No individual responses, email addresses,
-        IP addresses, or personally identifiable information are included.
       </div>
     </div>
   );

@@ -78,18 +78,18 @@ export default function PrivacyPage() {
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
           Account creation is <strong>optional</strong>. If you create an account, your email is used
           solely for authentication and is stored separately from your quiz results.
-          Your quiz data is never linked to your email in the public dataset.
+          Your quiz data is never linked to your email.
           You can delete your account and all associated data at any time from the Profile page.
         </p>
       </div>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
-        <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Dataset &amp; Research Use</h2>
+        <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Data Sharing</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          Anonymized, aggregate data may be accessed through the public API for research and
-          journalistic purposes. Individual results cannot be traced to any person. The dataset
-          includes only aggregate statistics: average scores, type distributions, and
-          country-level summaries.
+          Your quiz results are stored locally on your device and are not uploaded to any server.
+          If a backend is added in the future, only anonymized, aggregate statistics (such as
+          average scores and type distributions) would be shared — never individual results or
+          personal information.
         </p>
       </div>
 

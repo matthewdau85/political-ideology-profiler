@@ -22,7 +22,7 @@ export default function LandingPage() {
           </div>
           {stats.totalResponses > 0 && (
             <p className="landing-stat mono">
-              {stats.totalResponses.toLocaleString()} responses collected
+              {stats.totalResponses.toLocaleString()} quizzes completed on this device
             </p>
           )}
         </div>
@@ -51,8 +51,8 @@ export default function LandingPage() {
             <p>Create a free account and retake the quiz to see how your views change over months and years.</p>
           </div>
           <div className="feature-card card">
-            <h3>Anonymous &amp; Open</h3>
-            <p>All results are anonymous. Aggregated data is available for journalists and researchers to explore.</p>
+            <h3>Anonymous &amp; Private</h3>
+            <p>All results are anonymous and stored on your device. No personal information is collected or shared.</p>
           </div>
         </div>
       </section>

@@ -13,7 +13,7 @@ export default function MethodologyPage() {
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Two-Axis Political Model</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
           The Political Ideology Profiler uses a two-dimensional model to classify political ideology.
-          The <strong>economic axis</strong> ranges from socialist (-10) to market liberal (+10).
+          The <strong>economic axis</strong> ranges from left-leaning (-10) to right-leaning (+10).
           The <strong>social axis</strong> ranges from progressive (-10) to conservative (+10).
         </p>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
@@ -56,10 +56,10 @@ export default function MethodologyPage() {
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Cluster Classification</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
-          Users are classified into one of eight ideological clusters based on Euclidean distance
-          from each cluster's center point. Clusters are defined by economic and social ranges
-          derived from political science typology literature. Each cluster assignment includes
-          a probability score reflecting how closely the user's position matches the cluster center.
+          You are matched to one of eight political personality types based on how close your
+          scores are to each type's center point. Types are defined by economic and social ranges
+          based on political science research. Each type assignment includes a percentage showing
+          how closely your position matches that type.
         </p>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
           The eight clusters span the full political spectrum: Democratic Socialist, Structural

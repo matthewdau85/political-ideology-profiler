@@ -92,12 +92,12 @@ export default function App() {
           <div className="footer-content">
             <div className="footer-left">
               <span className="mono footer-label">Political Ideology Profiler</span>
-              <span className="footer-copy">A political science research tool</span>
+              <span className="footer-copy">A political quiz and analysis tool</span>
             </div>
             <div className="footer-links">
               <Link to="/about">About</Link>
               <Link to="/methodology">Methodology</Link>
-              <Link to="/api/ideology-stats">API</Link>
+              <Link to="/api/ideology-stats">Stats</Link>
               <Link to="/privacy">Privacy</Link>
             </div>
           </div>
