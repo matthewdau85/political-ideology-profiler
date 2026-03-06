@@ -28,7 +28,7 @@ export default function ResultsPage() {
 
   const closestFiguresFull = (result.closestFigures || []).map(cf => {
     const full = figures.find(f => f.id === cf.id || f.name === cf.name);
-    return { ...full, ...cf };
+    return full ? { ...full, ...cf } : cf;
   });
 
   return (
@@ -142,8 +142,8 @@ export default function ResultsPage() {
         </section>
       )}
 
-      {/* Top issues */}
-      {result.topIssues?.length > 0 && (
+      {/* Top issues — only show if user actively used importance weighting */}
+      {result.importanceUsed && result.topIssues?.length > 0 && (
         <section className="results-section">
           <h2 className="section-title">Your Top Issues</h2>
           <div className="card">

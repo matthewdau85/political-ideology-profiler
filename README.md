@@ -7,10 +7,10 @@ A production-ready political ideology quiz and analytics platform. Place users o
 ### Core Platform
 - **24-question ideology quiz** across 4 policy domains with importance weighting
 - **Two-axis scoring** — Economic (socialist to market liberal) and Social (progressive to conservative)
-- **Historical figure alignment** — compare with 17 figures from Marx to Friedman
+- **Historical figure alignment** — compare with 20 figures from Marx to Friedman
 - **8 ideological clusters** with probability scoring
 - **7-dimension radar analysis** — State Capacity, Labour Power, Anti-Monopoly, Globalism, Progressivism, Economic Left, Movement Orientation
-- **Country party comparison** — Australia, US, UK, Germany, Sweden
+- **Country party comparison** — Australia, US, UK, Germany, Sweden, Canada, France, Japan, Brazil, India, New Zealand
 
 ### Advanced Features (v2.0)
 - **User Accounts & Profiles** (`/profile`) — save results, track ideology changes over time

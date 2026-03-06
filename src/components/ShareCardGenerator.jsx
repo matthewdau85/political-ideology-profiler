@@ -23,7 +23,7 @@ export default function ShareCardGenerator({ result }) {
 
   const shareText = `I am a ${result.cluster}! Economic: ${result.economic > 0 ? '+' : ''}${result.economic} | Social: ${result.social > 0 ? '+' : ''}${result.social}. My closest alignment: ${result.closestFigures?.[0]?.name || 'N/A'}. Take the Political Ideology Profiler:`;
 
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/result/${result.id}` : '';
+  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/results/${result.id}` : '';
 
   const shareToTwitter = () => {
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
