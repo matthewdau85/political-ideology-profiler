@@ -71,6 +71,15 @@ export default function App() {
             <Route path="/map" element={<GlobalIdeologyMap />} />
             <Route path="/api/ideology-stats" element={<IdeologyStatsAPI />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="*" element={
+              <div className="container" style={{ padding: 'var(--spacing-3xl) 0', textAlign: 'center' }}>
+                <h2 style={{ fontSize: 36, marginBottom: 'var(--spacing-md)' }}>Page Not Found</h2>
+                <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-xl)' }}>
+                  The page you're looking for doesn't exist or has been moved.
+                </p>
+                <Link to="/" className="btn btn-primary">Back to Home</Link>
+              </div>
+            } />
           </Routes>
         </Suspense>
       </main>
@@ -86,7 +95,7 @@ export default function App() {
               <Link to="/methodology">Methodology</Link>
               <Link to="/api/ideology-stats">API</Link>
               <Link to="/privacy">Privacy</Link>
-              <Link to="/admin">Dashboard</Link>
+              <Link to="/admin">Research Dashboard</Link>
               <Link to="/pricing">Premium</Link>
             </div>
           </div>

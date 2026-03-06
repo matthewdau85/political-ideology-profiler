@@ -63,6 +63,17 @@ export default function FriendCompare() {
         />
       </div>
 
+      {user1.radarScores?.length > 0 && user2.radarScores?.length > 0 && (
+        <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
+          <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Radar Comparison</h3>
+          <RadarAnalysis
+            radarScores={user1.radarScores}
+            secondaryScores={user2.radarScores}
+            labels={['Participant 1', 'Participant 2']}
+          />
+        </div>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-xl)' }}>
         <div className="card" style={{ textAlign: 'center' }}>
           <span className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>Economic Gap</span>

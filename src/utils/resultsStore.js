@@ -131,6 +131,17 @@ export function getPermalink(id) {
   return links[id] || null;
 }
 
+export function getLatestPermalink() {
+  const all = getAllPermalinks();
+  const keys = Object.keys(all);
+  return keys.length ? all[keys[keys.length - 1]] : null;
+}
+
+export function getAllPermalinkEntries() {
+  const all = getAllPermalinks();
+  return Object.entries(all).map(([id, data]) => ({ id, ...data }));
+}
+
 function getAllPermalinks() {
   try {
     return JSON.parse(localStorage.getItem(PERMALINKS_KEY) || '{}');

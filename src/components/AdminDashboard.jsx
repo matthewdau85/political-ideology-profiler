@@ -1,13 +1,46 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { getStats, getAllResults } from '../utils/resultsStore';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
+  PieChart, Pie, Cell,
 } from 'recharts';
 
 const COLORS = ['#dc2626', '#e85d04', '#7c3aed', '#0891b2', '#2563eb', '#1d4ed8', '#1e3a5f', '#78350f'];
+const ADMIN_KEY = 'ideology_admin_auth';
 
 export default function AdminDashboard() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem(ADMIN_KEY) === 'true');
+  const [pin, setPin] = useState('');
+
+  if (!authed) {
+    return (
+      <div className="container" style={{ padding: 'var(--spacing-3xl) 0', maxWidth: 400, textAlign: 'center' }}>
+        <h2 style={{ marginBottom: 'var(--spacing-lg)' }}>Research Dashboard</h2>
+        <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-lg)' }}>
+          Enter the admin PIN to access the research dashboard.
+        </p>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (pin === 'admin2024') {
+            sessionStorage.setItem(ADMIN_KEY, 'true');
+            setAuthed(true);
+          } else {
+            setPin('');
+          }
+        }}>
+          <input
+            type="password"
+            className="input-field"
+            value={pin}
+            onChange={e => setPin(e.target.value)}
+            placeholder="Enter PIN"
+            style={{ marginBottom: 'var(--spacing-md)', textAlign: 'center' }}
+          />
+          <button className="btn btn-primary" type="submit" style={{ width: '100%' }}>Access Dashboard</button>
+        </form>
+      </div>
+    );
+  }
   const stats = useMemo(() => getStats(), []);
   const allResults = useMemo(() => getAllResults(), []);
 

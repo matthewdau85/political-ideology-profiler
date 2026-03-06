@@ -9,16 +9,16 @@ export default function LandingPage() {
     <div className="landing">
       <header className="landing-header">
         <div className="container">
-          <p className="landing-label mono">Political Science Research Tool</p>
+          <p className="landing-label mono">Political Quiz &amp; Analysis Tool</p>
           <h1 className="landing-title">Political Ideology Profiler</h1>
           <p className="landing-subtitle">
-            Discover where you stand on the ideological spectrum. Compare your views with
-            historical political figures, classify your ideology, and contribute to an
-            open political science dataset.
+            Find out where you stand politically. Compare your views with
+            historical figures, discover your ideological group, and see how
+            you compare with people around the world.
           </p>
           <div className="landing-actions">
-            <Link to="/quiz" className="btn btn-primary">Begin the Assessment</Link>
-            <Link to="/methodology" className="btn btn-secondary">Read the Methodology</Link>
+            <Link to="/quiz" className="btn btn-primary">Take the Quiz</Link>
+            <Link to="/methodology" className="btn btn-secondary">How It Works</Link>
           </div>
           {stats.totalResponses > 0 && (
             <p className="landing-stat mono">
@@ -31,28 +31,28 @@ export default function LandingPage() {
       <section className="landing-features container">
         <div className="feature-grid">
           <div className="feature-card card">
-            <h3>Two-Axis Analysis</h3>
-            <p>Plot your position on economic (left–right) and social (progressive–conservative) axes using 24 calibrated questions.</p>
+            <h3>Economic &amp; Social Scores</h3>
+            <p>Answer 24 questions to get scored on two dimensions: economic (left to right) and social (progressive to conservative).</p>
           </div>
           <div className="feature-card card">
-            <h3>Historical Alignment</h3>
-            <p>Compare your ideology with 17 historical figures from Karl Marx to Milton Friedman.</p>
+            <h3>Historical Match</h3>
+            <p>See which historical political figures — from Karl Marx to Milton Friedman — you're most aligned with.</p>
           </div>
           <div className="feature-card card">
-            <h3>Cluster Classification</h3>
-            <p>Get classified into one of 8 ideological clusters with probability scores and detailed descriptions.</p>
+            <h3>Personality Type</h3>
+            <p>Get matched to one of 8 political personality types with a breakdown of how closely you fit each one.</p>
           </div>
           <div className="feature-card card">
-            <h3>Debate Mode</h3>
-            <p>Generate a debate link, have a friend take the quiz, and compare your ideological positions side by side.</p>
+            <h3>Challenge a Friend</h3>
+            <p>Send a link to a friend, have them take the quiz, and compare your political positions side by side.</p>
           </div>
           <div className="feature-card card">
-            <h3>Ideology Tracker</h3>
-            <p>Create an account to retake the quiz over time and visualize how your ideology evolves.</p>
+            <h3>Track Over Time</h3>
+            <p>Create a free account and retake the quiz to see how your views change over months and years.</p>
           </div>
           <div className="feature-card card">
-            <h3>Open Dataset</h3>
-            <p>All anonymized results contribute to a public dataset for journalists and researchers.</p>
+            <h3>Anonymous &amp; Open</h3>
+            <p>All results are anonymous. Aggregated data is available for journalists and researchers to explore.</p>
           </div>
         </div>
       </section>
@@ -61,7 +61,7 @@ export default function LandingPage() {
         <div className="card" style={{ textAlign: 'center' }}>
           <h2>Where do you stand?</h2>
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-lg)' }}>
-            24 questions. 8 minutes. A detailed ideological profile.
+            24 questions. About 8 minutes. A full political profile with charts and comparisons.
           </p>
           <Link to="/quiz" className="btn btn-accent">Start the Quiz</Link>
         </div>

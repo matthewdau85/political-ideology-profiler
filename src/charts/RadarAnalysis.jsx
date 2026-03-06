@@ -7,10 +7,18 @@ import {
 export default function RadarAnalysis({ radarScores = [], secondaryScores = null, labels = ['You', 'Comparison'] }) {
   if (!radarScores.length) return null;
 
+  // Merge secondary scores into chart data if provided
+  const chartData = secondaryScores
+    ? radarScores.map(d => {
+        const match = secondaryScores.find(s => s.dimension === d.dimension);
+        return { ...d, value2: match ? match.value : 0 };
+      })
+    : radarScores;
+
   return (
     <div style={{ width: '100%', height: 350 }}>
       <ResponsiveContainer>
-        <RadarChart data={radarScores}>
+        <RadarChart data={chartData}>
           <PolarGrid stroke="var(--color-border)" />
           <PolarAngleAxis
             dataKey="dimension"

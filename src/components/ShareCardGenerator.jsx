@@ -1,7 +1,8 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 
 export default function ShareCardGenerator({ result }) {
   const cardRef = useRef(null);
+  const [copied, setCopied] = useState(false);
 
   const downloadCard = useCallback(async () => {
     if (!cardRef.current) return;
@@ -76,7 +77,9 @@ export default function ShareCardGenerator({ result }) {
         <button className="btn btn-sm btn-secondary" onClick={shareToLinkedIn}>LinkedIn</button>
         <button className="btn btn-sm btn-secondary" onClick={() => {
           navigator.clipboard?.writeText(shareUrl);
-        }}>Copy Link</button>
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }}>{copied ? 'Copied!' : 'Copy Link'}</button>
       </div>
     </div>
   );

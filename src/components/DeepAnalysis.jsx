@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getPermalink } from '../utils/resultsStore';
+import { getPermalink, getLatestPermalink } from '../utils/resultsStore';
 import RadarAnalysis from '../charts/RadarAnalysis';
 import PremiumGate from './PremiumGate';
 
@@ -8,10 +8,7 @@ export default function DeepAnalysis() {
   const { id } = useParams();
   const result = useMemo(() => {
     if (id) return getPermalink(id);
-    // Try to get most recent result
-    const all = JSON.parse(localStorage.getItem('ideology_permalinks') || '{}');
-    const keys = Object.keys(all);
-    return keys.length ? all[keys[keys.length - 1]] : null;
+    return getLatestPermalink();
   }, [id]);
 
   if (!result) {

@@ -9,16 +9,17 @@ const ZoomableGroup = lazy(() => import('react-simple-maps').then(m => ({ defaul
 
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
-// Map country names to ISO/GeoJSON names
+// Map quiz country names to GeoJSON names (only where they differ)
 const COUNTRY_MAP = {
   'United States': 'United States of America',
-  'United Kingdom': 'United Kingdom',
-  'Australia': 'Australia',
-  'Germany': 'Germany',
-  'Sweden': 'Sweden',
-  'Canada': 'Canada',
-  'France': 'France',
-  'New Zealand': 'New Zealand',
+  'South Korea': 'Korea',
+  'Czech Republic': 'Czechia',
+  'Russia': 'Russian Federation',
+  'Taiwan': 'Taiwan',
+  'Iran': 'Iran',
+  'Venezuela': 'Venezuela',
+  'Vietnam': 'Viet Nam',
+  'Trinidad and Tobago': 'Trinidad and Tobago',
 };
 
 function getEconomicColor(value) {

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getPermalink } from '../utils/resultsStore';
+import { getPermalink, getLatestPermalink } from '../utils/resultsStore';
 import parties from '../data/parties';
 import { findClosestParties } from '../utils/calcResults';
 import PremiumGate from './PremiumGate';
@@ -11,9 +11,7 @@ export default function CountryComparison() {
 
   const result = useMemo(() => {
     if (id) return getPermalink(id);
-    const all = JSON.parse(localStorage.getItem('ideology_permalinks') || '{}');
-    const keys = Object.keys(all);
-    return keys.length ? all[keys[keys.length - 1]] : null;
+    return getLatestPermalink();
   }, [id]);
 
   const partyComparisons = useMemo(() => {

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getPermalink } from '../utils/resultsStore';
-import { getStats } from '../utils/resultsStore';
+import { getPermalink, getStats } from '../utils/resultsStore';
 import figures from '../data/figures';
 import IdeologyScatter from '../charts/IdeologyScatter';
 import RadarAnalysis from '../charts/RadarAnalysis';
@@ -35,7 +34,7 @@ export default function ResultsPage() {
     <div className="results-page container">
       {/* Cluster classification */}
       <div className="results-header">
-        <span className="mono results-label">Your Ideological Profile</span>
+        <span className="mono results-label">Your Political Profile</span>
         <h1 className="results-cluster" style={{ color: result.clusterColor }}>
           {result.cluster}
         </h1>
@@ -45,14 +44,14 @@ export default function ResultsPage() {
       {/* Axis scores */}
       <div className="results-scores">
         <div className="score-box">
-          <span className="mono score-label">Economic Axis</span>
+          <span className="mono score-label">Economic Score</span>
           <span className={`score-value ${result.economic < 0 ? 'score-negative' : 'score-positive'}`}>
             {result.economic > 0 ? '+' : ''}{result.economic}
           </span>
-          <span className="score-range mono">{result.economic < 0 ? 'Left / Socialist' : 'Right / Market Liberal'}</span>
+          <span className="score-range mono">{result.economic < 0 ? 'Left-leaning' : 'Right-leaning'}</span>
         </div>
         <div className="score-box">
-          <span className="mono score-label">Social Axis</span>
+          <span className="mono score-label">Social Score</span>
           <span className={`score-value ${result.social < 0 ? 'score-negative' : 'score-positive'}`}>
             {result.social > 0 ? '+' : ''}{result.social}
           </span>
@@ -62,7 +61,7 @@ export default function ResultsPage() {
 
       {/* Top alignment */}
       <section className="results-section">
-        <h2 className="section-title">Historical Alignment</h2>
+        <h2 className="section-title">Closest Historical Figures</h2>
         {closestFiguresFull.map((fig, i) => (
           <div key={fig.id || i} style={{ marginBottom: 'var(--spacing-md)' }}>
             <AlignmentCard figure={fig} rank={i + 1} />
@@ -72,7 +71,7 @@ export default function ResultsPage() {
 
       {/* Scatter chart */}
       <section className="results-section">
-        <h2 className="section-title">Ideological Position</h2>
+        <h2 className="section-title">Where You Land</h2>
         <div className="card">
           <IdeologyScatter
             economic={result.economic}
@@ -86,7 +85,7 @@ export default function ResultsPage() {
       {/* Radar analysis */}
       {result.radarScores?.length > 0 && (
         <section className="results-section">
-          <h2 className="section-title">Ideological Radar</h2>
+          <h2 className="section-title">Your Political Dimensions</h2>
           <div className="card">
             <RadarAnalysis radarScores={result.radarScores} />
           </div>
@@ -96,7 +95,7 @@ export default function ResultsPage() {
       {/* Cluster probabilities */}
       {result.clusters?.length > 0 && (
         <section className="results-section">
-          <h2 className="section-title">Cluster Probabilities</h2>
+          <h2 className="section-title">How You Fit Each Type</h2>
           <div className="card">
             <div className="cluster-list">
               {result.clusters.filter(c => c.probability > 0.01).map(c => (

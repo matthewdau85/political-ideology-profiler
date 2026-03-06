@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getSession, login, createAccount, logout, getUserResults, deleteUserData, deleteAccount } from '../utils/authStore';
+import { getSession, login, createAccount, logout, deleteUserData, deleteAccount } from '../utils/authStore';
 import { trackEvent, Events } from '../utils/analytics';
 import EvolutionChart from '../charts/EvolutionChart';
 

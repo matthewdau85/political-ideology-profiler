@@ -137,7 +137,7 @@ export default function QuizPage() {
         <div className="card quiz-country">
           <h2>Before we begin</h2>
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-lg)' }}>
-            Optionally select your country. This is used only for anonymized geographic analysis.
+            Optionally select your country. This helps us show political trends by region.
           </p>
           <select
             className="input-field"
@@ -146,19 +146,94 @@ export default function QuizPage() {
             style={{ marginBottom: 'var(--spacing-lg)' }}
           >
             <option value="">Prefer not to say</option>
-            <option value="Australia">Australia</option>
-            <option value="United States">United States</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="Canada">Canada</option>
-            <option value="Germany">Germany</option>
-            <option value="Sweden">Sweden</option>
-            <option value="France">France</option>
-            <option value="New Zealand">New Zealand</option>
+            <optgroup label="North America">
+              <option value="United States">United States</option>
+              <option value="Canada">Canada</option>
+              <option value="Mexico">Mexico</option>
+            </optgroup>
+            <optgroup label="Europe">
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="France">France</option>
+              <option value="Germany">Germany</option>
+              <option value="Italy">Italy</option>
+              <option value="Spain">Spain</option>
+              <option value="Portugal">Portugal</option>
+              <option value="Netherlands">Netherlands</option>
+              <option value="Belgium">Belgium</option>
+              <option value="Switzerland">Switzerland</option>
+              <option value="Austria">Austria</option>
+              <option value="Sweden">Sweden</option>
+              <option value="Norway">Norway</option>
+              <option value="Denmark">Denmark</option>
+              <option value="Finland">Finland</option>
+              <option value="Iceland">Iceland</option>
+              <option value="Ireland">Ireland</option>
+              <option value="Poland">Poland</option>
+              <option value="Czech Republic">Czech Republic</option>
+              <option value="Hungary">Hungary</option>
+              <option value="Romania">Romania</option>
+              <option value="Greece">Greece</option>
+              <option value="Croatia">Croatia</option>
+              <option value="Serbia">Serbia</option>
+              <option value="Bulgaria">Bulgaria</option>
+              <option value="Slovakia">Slovakia</option>
+              <option value="Slovenia">Slovenia</option>
+              <option value="Estonia">Estonia</option>
+              <option value="Latvia">Latvia</option>
+              <option value="Lithuania">Lithuania</option>
+              <option value="Ukraine">Ukraine</option>
+              <option value="Russia">Russia</option>
+            </optgroup>
+            <optgroup label="Asia &amp; Pacific">
+              <option value="Australia">Australia</option>
+              <option value="New Zealand">New Zealand</option>
+              <option value="Japan">Japan</option>
+              <option value="South Korea">South Korea</option>
+              <option value="China">China</option>
+              <option value="Taiwan">Taiwan</option>
+              <option value="India">India</option>
+              <option value="Pakistan">Pakistan</option>
+              <option value="Bangladesh">Bangladesh</option>
+              <option value="Indonesia">Indonesia</option>
+              <option value="Philippines">Philippines</option>
+              <option value="Vietnam">Vietnam</option>
+              <option value="Thailand">Thailand</option>
+              <option value="Malaysia">Malaysia</option>
+              <option value="Singapore">Singapore</option>
+            </optgroup>
+            <optgroup label="Middle East &amp; Africa">
+              <option value="Turkey">Turkey</option>
+              <option value="Israel">Israel</option>
+              <option value="Saudi Arabia">Saudi Arabia</option>
+              <option value="United Arab Emirates">United Arab Emirates</option>
+              <option value="Iran">Iran</option>
+              <option value="Egypt">Egypt</option>
+              <option value="South Africa">South Africa</option>
+              <option value="Nigeria">Nigeria</option>
+              <option value="Kenya">Kenya</option>
+              <option value="Ghana">Ghana</option>
+              <option value="Morocco">Morocco</option>
+              <option value="Ethiopia">Ethiopia</option>
+            </optgroup>
+            <optgroup label="Latin America &amp; Caribbean">
+              <option value="Brazil">Brazil</option>
+              <option value="Argentina">Argentina</option>
+              <option value="Colombia">Colombia</option>
+              <option value="Chile">Chile</option>
+              <option value="Peru">Peru</option>
+              <option value="Venezuela">Venezuela</option>
+              <option value="Ecuador">Ecuador</option>
+              <option value="Uruguay">Uruguay</option>
+              <option value="Costa Rica">Costa Rica</option>
+              <option value="Puerto Rico">Puerto Rico</option>
+              <option value="Jamaica">Jamaica</option>
+              <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+            </optgroup>
             <option value="Other">Other</option>
           </select>
           <div className="privacy-notice">
-            Your responses are anonymous. No personal data is collected unless you create an account.
-            You can delete your data at any time.
+            Your answers are anonymous. We don't collect personal data unless you choose to create an account.
+            You can delete everything at any time.
           </div>
           <button className="btn btn-primary" onClick={() => { setShowCountry(false); trackEvent(Events.QUIZ_STARTED); }}>
             Begin Quiz

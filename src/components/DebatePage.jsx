@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getDebateById, saveDebate } from '../utils/resultsStore';
+import { getDebateById, saveDebate, getAllPermalinkEntries } from '../utils/resultsStore';
 import { trackEvent, Events } from '../utils/analytics';
 import { generateId } from '../utils/math';
 
@@ -66,14 +66,7 @@ function NewDebate() {
   const [resultId, setResultId] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const results = useMemo(() => {
-    try {
-      const all = JSON.parse(localStorage.getItem('ideology_permalinks') || '{}');
-      return Object.entries(all).map(([id, data]) => ({ id, ...data }));
-    } catch {
-      return [];
-    }
-  }, []);
+  const results = useMemo(() => getAllPermalinkEntries(), []);
 
   const createDebate = () => {
     const selected = results.find(r => r.id === resultId);
