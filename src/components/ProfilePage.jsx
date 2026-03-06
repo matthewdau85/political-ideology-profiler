@@ -95,7 +95,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="privacy-notice">
-          Your email is used only for authentication. All quiz data is stored separately and anonymized.
+          Your email is used only for authentication and is never linked to your quiz results. All quiz data is anonymized.
           You can delete your account and all associated data at any time.
         </div>
       </div>

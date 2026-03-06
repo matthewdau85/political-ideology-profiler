@@ -60,8 +60,8 @@ export default function IdeologyScatter({ economic, social, closestFigures = [],
         <ScatterChart margin={{ top: 20, right: 40, bottom: 20, left: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
           <XAxis type="number" dataKey="x" domain={[-10, 10]} tickCount={5} fontSize={11} fontFamily="var(--font-mono)">
-            <Label value="Socialist" position="insideLeft" offset={10} fontSize={10} fill="var(--color-text-secondary)" />
-            <Label value="Market Liberal" position="insideRight" offset={10} fontSize={10} fill="var(--color-text-secondary)" />
+            <Label value="Left-leaning" position="insideLeft" offset={10} fontSize={10} fill="var(--color-text-secondary)" />
+            <Label value="Right-leaning" position="insideRight" offset={10} fontSize={10} fill="var(--color-text-secondary)" />
           </XAxis>
           <YAxis type="number" dataKey="y" domain={[-10, 10]} tickCount={5} fontSize={11} fontFamily="var(--font-mono)">
             <Label value="Progressive" position="insideBottom" offset={10} fontSize={10} fill="var(--color-text-secondary)" angle={-90} />

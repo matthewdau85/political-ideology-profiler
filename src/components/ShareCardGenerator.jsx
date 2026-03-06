@@ -30,11 +30,11 @@ export default function ShareCardGenerator({ result }) {
   };
 
   const shareToReddit = () => {
-    window.open(`https://reddit.com/submit?title=${encodeURIComponent(`I am a ${result.cluster} — Political Ideology Profiler`)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+    window.open(`https://www.reddit.com/submit?title=${encodeURIComponent(`I am a ${result.cluster} — Political Ideology Profiler`)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
   };
 
   const shareToLinkedIn = () => {
-    window.open(`https://linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank');
   };
 
   return (

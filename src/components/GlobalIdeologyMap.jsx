@@ -148,7 +148,7 @@ export default function GlobalIdeologyMap() {
       {/* Legend */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', marginBottom: 'var(--spacing-xl)' }}>
         <span className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-          {metric === 'economic' ? 'Socialist (-10)' : 'Progressive (-10)'}
+          {metric === 'economic' ? 'Left-leaning (-10)' : 'Progressive (-10)'}
         </span>
         <div style={{
           flex: 1, height: 8, borderRadius: 4,
@@ -157,7 +157,7 @@ export default function GlobalIdeologyMap() {
             : 'linear-gradient(to right, #7c3aed, #e2e0dc, #d97706)',
         }} />
         <span className="mono" style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
-          {metric === 'economic' ? 'Market Liberal (+10)' : 'Conservative (+10)'}
+          {metric === 'economic' ? 'Right-leaning (+10)' : 'Conservative (+10)'}
         </span>
       </div>
 
