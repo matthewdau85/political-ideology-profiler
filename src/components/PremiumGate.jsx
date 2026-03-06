@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { trackEvent, Events } from '../utils/analytics';
 
-const PRICES = {
-  deep_analysis: { label: 'Deep Analysis', price: 5 },
-  report: { label: 'Political Personality Report', price: 12 },
-  country_comparison: { label: 'Country Comparison', price: 5 },
-  friend_comparison: { label: 'Friend Comparison', price: 3 },
-  premium_membership: { label: 'Premium Membership (yearly)', price: 25 },
+const FEATURES = {
+  deep_analysis: { label: 'Deep Analysis' },
+  report: { label: 'Political Personality Report' },
+  country_comparison: { label: 'Country Comparison' },
+  friend_comparison: { label: 'Friend Comparison' },
+  premium_membership: { label: 'Premium Membership' },
 };
 
 export default function PremiumGate({ feature = 'deep_analysis', children, onUnlock }) {
@@ -19,12 +19,12 @@ export default function PremiumGate({ feature = 'deep_analysis', children, onUnl
     }
   });
 
-  const info = PRICES[feature] || PRICES.deep_analysis;
+  const info = FEATURES[feature] || FEATURES.deep_analysis;
 
-  const handlePurchase = () => {
-    trackEvent(Events.PREMIUM_PURCHASED, { feature, price: info.price });
+  const handlePreview = () => {
+    trackEvent(Events.PREMIUM_CLICKED, { feature });
 
-    // Mock purchase — replace with Stripe integration
+    // Free preview mode — unlock content for this session
     const purchased = JSON.parse(localStorage.getItem('premium_purchases') || '{}');
     purchased[feature] = true;
     localStorage.setItem('premium_purchases', JSON.stringify(purchased));
@@ -43,16 +43,13 @@ export default function PremiumGate({ feature = 'deep_analysis', children, onUnl
       </span>
       <h3 style={{ margin: 'var(--spacing-md) 0 var(--spacing-sm)' }}>{info.label}</h3>
       <p style={{ color: 'var(--color-text-secondary)', fontSize: 14, marginBottom: 'var(--spacing-lg)' }}>
-        Unlock this feature for a one-time payment.
+        This is a premium feature. Paid plans are coming soon — for now, enjoy a free preview.
       </p>
-      <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-heading)', marginBottom: 'var(--spacing-lg)' }}>
-        ${info.price}
-      </div>
-      <button className="btn btn-accent" onClick={handlePurchase}>
-        Unlock Now
+      <button className="btn btn-accent" onClick={handlePreview}>
+        Unlock Free Preview
       </button>
       <p style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-md)' }}>
-        Development mode — mock purchase. Stripe integration ready.
+        No payment required during the preview period.
       </p>
     </div>
   );

@@ -160,17 +160,17 @@ export default function ResultsPage() {
         <ShareCardGenerator result={result} />
       </section>
 
-      {/* Premium upsell */}
+      {/* Explore more */}
       <section className="results-section">
         <div className="card" style={{ textAlign: 'center' }}>
-          <h3>Want deeper analysis?</h3>
+          <h3>Explore More</h3>
           <p style={{ color: 'var(--color-text-secondary)', margin: 'var(--spacing-md) 0' }}>
-            Unlock detailed country comparisons, political personality reports, and debate mode.
+            Dig deeper into your results or challenge a friend.
           </p>
           <div style={{ display: 'flex', gap: 'var(--spacing-sm)', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link to="/deep-analysis" className="btn btn-sm btn-accent">Deep Analysis</Link>
             <Link to="/country-comparison" className="btn btn-sm btn-secondary">Country Comparison</Link>
-            <Link to="/debate/new" className="btn btn-sm btn-secondary">Debate a Friend</Link>
+            <Link to="/debate/new" className="btn btn-sm btn-secondary">Challenge a Friend</Link>
           </div>
         </div>
       </section>
@@ -178,7 +178,6 @@ export default function ResultsPage() {
       {/* Actions */}
       <section className="results-section" style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap' }}>
         <Link to="/quiz" className="btn btn-secondary">Retake Quiz</Link>
-        <Link to="/profile" className="btn btn-secondary">View Profile</Link>
         <Link to="/map" className="btn btn-secondary">Global Map</Link>
       </section>
 

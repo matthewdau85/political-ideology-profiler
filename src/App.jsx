@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { getSession } from './utils/authStore';
+import CookieConsent from './components/CookieConsent';
 
 // Eagerly load core pages
 import LandingPage from './components/LandingPage';
@@ -20,6 +21,7 @@ const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const GlobalIdeologyMap = lazy(() => import('./components/GlobalIdeologyMap'));
 const IdeologyStatsAPI = lazy(() => import('./components/IdeologyStatsAPI'));
 const PrivacyPage = lazy(() => import('./components/PrivacyPage'));
+const AboutPage = lazy(() => import('./components/AboutPage'));
 
 function Loading() {
   return (
@@ -71,6 +73,7 @@ export default function App() {
             <Route path="/map" element={<GlobalIdeologyMap />} />
             <Route path="/api/ideology-stats" element={<IdeologyStatsAPI />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="*" element={
               <div className="container" style={{ padding: 'var(--spacing-3xl) 0', textAlign: 'center' }}>
                 <h2 style={{ fontSize: 36, marginBottom: 'var(--spacing-md)' }}>Page Not Found</h2>
@@ -92,15 +95,16 @@ export default function App() {
               <span className="footer-copy">A political science research tool</span>
             </div>
             <div className="footer-links">
+              <Link to="/about">About</Link>
               <Link to="/methodology">Methodology</Link>
               <Link to="/api/ideology-stats">API</Link>
               <Link to="/privacy">Privacy</Link>
-              <Link to="/admin">Research Dashboard</Link>
-              <Link to="/pricing">Premium</Link>
             </div>
           </div>
         </div>
       </footer>
+
+      <CookieConsent />
 
       <style>{`
         .app { min-height: 100vh; display: flex; flex-direction: column; }
