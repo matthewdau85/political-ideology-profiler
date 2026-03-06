@@ -7,6 +7,7 @@ import RadarAnalysis from '../charts/RadarAnalysis';
 import AlignmentCard from './AlignmentCard';
 import ShareCardGenerator from './ShareCardGenerator';
 import AdSlot from './AdSlot';
+import { generatePDFReport } from '../utils/pdfReport';
 
 export default function ResultsPage() {
   const { id } = useParams();
@@ -205,6 +206,9 @@ export default function ResultsPage() {
       <section className="results-section" style={{ display: 'flex', gap: 'var(--spacing-sm)', flexWrap: 'wrap' }}>
         <Link to="/quiz" className="btn btn-secondary">Retake Quiz</Link>
         <Link to="/map" className="btn btn-secondary">Global Map</Link>
+        <button className="btn btn-secondary" onClick={() => generatePDFReport(result)}>
+          Download PDF Report
+        </button>
       </section>
 
       <AdSlot placement="results_footer" />
