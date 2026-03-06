@@ -36,6 +36,49 @@ const parties = {
     { name: 'Moderaterna', economic: 4, social: 1, color: '#52BDEC' },
     { name: 'Sverigedemokraterna', economic: -1, social: 7, color: '#DDDD00' },
   ],
+  Canada: [
+    { name: 'New Democratic Party', economic: -5, social: -5, color: '#F58220' },
+    { name: 'Liberal Party', economic: -1.5, social: -3, color: '#D71920' },
+    { name: 'Conservative Party', economic: 3, social: 2.5, color: '#1A4782' },
+    { name: 'Bloc Québécois', economic: -2, social: -1, color: '#33B2CC' },
+    { name: 'Green Party', economic: -4, social: -6, color: '#3D9B35' },
+    { name: "People's Party", economic: 6, social: 4, color: '#462D8C' },
+  ],
+  France: [
+    { name: 'La France Insoumise', economic: -7, social: -5, color: '#CC2443' },
+    { name: 'Parti Socialiste', economic: -3.5, social: -3.5, color: '#FF8080' },
+    { name: 'Europe Écologie–Les Verts', economic: -4, social: -6, color: '#00C000' },
+    { name: 'Renaissance (Macron)', economic: 1.5, social: -2, color: '#FFD600' },
+    { name: 'Les Républicains', economic: 3, social: 3, color: '#0066CC' },
+    { name: 'Rassemblement National', economic: -1, social: 7, color: '#0D378A' },
+  ],
+  Japan: [
+    { name: 'Japanese Communist Party', economic: -6, social: -4, color: '#CF0000' },
+    { name: 'Constitutional Democratic Party', economic: -3, social: -3.5, color: '#1B4F93' },
+    { name: 'Komeito', economic: -1, social: 0, color: '#F39800' },
+    { name: 'Liberal Democratic Party', economic: 2.5, social: 3.5, color: '#009933' },
+    { name: 'Nippon Ishin no Kai', economic: 4, social: 1, color: '#00A03B' },
+  ],
+  Brazil: [
+    { name: 'PSOL', economic: -7, social: -6, color: '#FFD700' },
+    { name: "Workers' Party (PT)", economic: -4, social: -3, color: '#CC0000' },
+    { name: 'MDB', economic: 0, social: 0.5, color: '#0080FF' },
+    { name: 'PSDB', economic: 2, social: 0, color: '#0044BB' },
+    { name: 'PL (Bolsonaro)', economic: 3, social: 7, color: '#003399' },
+  ],
+  India: [
+    { name: 'Communist Party of India (Marxist)', economic: -7, social: -3, color: '#FF0000' },
+    { name: 'Indian National Congress', economic: -2, social: -1.5, color: '#00BFFF' },
+    { name: 'Aam Aadmi Party', economic: -3, social: -2.5, color: '#0066FF' },
+    { name: 'Bharatiya Janata Party', economic: 2, social: 5, color: '#FF9933' },
+  ],
+  'New Zealand': [
+    { name: 'Green Party', economic: -5, social: -6, color: '#098137' },
+    { name: 'Labour Party', economic: -2.5, social: -3, color: '#D82C20' },
+    { name: 'New Zealand First', economic: 0, social: 3, color: '#000000' },
+    { name: 'National Party', economic: 3.5, social: 1.5, color: '#00529F' },
+    { name: 'ACT Party', economic: 7, social: -1, color: '#FDE401' },
+  ],
 };
 
 export default parties;
