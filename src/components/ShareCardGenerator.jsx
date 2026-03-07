@@ -21,7 +21,14 @@ export default function ShareCardGenerator({ result }) {
     }
   }, [result]);
 
-  const shareText = `I am a ${result.cluster}! Economic: ${result.economic > 0 ? '+' : ''}${result.economic} | Social: ${result.social > 0 ? '+' : ''}${result.social}. My closest alignment: ${result.closestFigures?.[0]?.name || 'N/A'}. Take the Political Ideology Profiler:`;
+  const comparativeLine = result.comparativeInsights?.[0] || '';
+  const shareText = [
+    `I am a ${result.cluster}${result.typology ? ` (${result.typology})` : ''}.`,
+    `Economic: ${result.economic > 0 ? '+' : ''}${result.economic} | Social: ${result.social > 0 ? '+' : ''}${result.social}.`,
+    `Closest alignment: ${result.closestFigures?.[0]?.name || 'N/A'}.`,
+    comparativeLine,
+    'Take the Political Ideology Profiler:',
+  ].filter(Boolean).join(' ');
 
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/results/${result.id}` : '';
 
@@ -41,14 +48,19 @@ export default function ShareCardGenerator({ result }) {
     <div className="share-generator">
       <div ref={cardRef} className="share-card" style={{
         background: '#faf9f6', padding: 32, borderRadius: 12, border: '1px solid #e2e0dc',
-        maxWidth: 480, fontFamily: "'IBM Plex Sans', sans-serif",
+        maxWidth: 520, fontFamily: "'IBM Plex Sans', sans-serif",
       }}>
         <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: '#c4a035', marginBottom: 8 }}>
           Political Ideology Profiler
         </div>
         <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 600, marginBottom: 4 }}>
-          I am a {result.cluster}
+          {result.cluster}
         </div>
+        {result.typology && (
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: '#5a5a6e' }}>
+            Typology: {result.typology}
+          </div>
+        )}
         <div style={{ display: 'flex', gap: 16, marginTop: 16, marginBottom: 16 }}>
           <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13 }}>
             <span style={{ color: '#5a5a6e' }}>Economic</span>{' '}
@@ -64,8 +76,13 @@ export default function ShareCardGenerator({ result }) {
           </div>
         </div>
         {result.closestFigures?.length > 0 && (
-          <div style={{ fontSize: 13, color: '#5a5a6e' }}>
+          <div style={{ fontSize: 13, color: '#5a5a6e', marginBottom: 8 }}>
             Closest alignment: <strong style={{ color: '#1a1a2e' }}>{result.closestFigures.map(f => f.name).join(', ')}</strong>
+          </div>
+        )}
+        {comparativeLine && (
+          <div style={{ fontSize: 12, color: '#1a1a2e' }}>
+            {comparativeLine}
           </div>
         )}
       </div>

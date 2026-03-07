@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getSession, login, createAccount, logout, deleteUserData, deleteAccount } from '../utils/authStore';
+import { getSession, login, createAccount, logout, deleteUserData, deleteAccount, getUserResults, hydrateSession } from '../utils/authStore';
 import { trackEvent, Events } from '../utils/analytics';
 import EvolutionChart from '../charts/EvolutionChart';
 
@@ -13,24 +13,25 @@ export default function ProfilePage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const navigate = useNavigate();
 
-  const handleAuth = (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
     setError('');
     const result = mode === 'signup'
-      ? createAccount(email, password)
-      : login(email, password);
+      ? await createAccount(email, password)
+      : await login(email, password);
 
     if (result.error) {
       setError(result.error);
     } else {
-      setSession(result.user);
+      const hydrated = await hydrateSession();
+      setSession(hydrated || result.user);
       if (mode === 'signup') trackEvent(Events.ACCOUNT_CREATED);
       trackEvent(Events.PROFILE_VIEWED);
     }
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setSession(null);
   };
 
@@ -40,8 +41,8 @@ export default function ProfilePage() {
     setShowDeleteConfirm(false);
   };
 
-  const handleDeleteAccount = () => {
-    deleteAccount();
+  const handleDeleteAccount = async () => {
+    await deleteAccount();
     setSession(null);
     navigate('/');
   };
@@ -83,6 +84,11 @@ export default function ProfilePage() {
             <button className="btn btn-primary" type="submit" style={{ width: '100%' }}>
               {mode === 'login' ? 'Log In' : 'Create Account'}
             </button>
+            {mode === 'signup' && (
+              <p style={{ marginTop: 'var(--spacing-sm)', color: 'var(--color-text-secondary)', fontSize: 12 }}>
+                You may need to verify your email before first login, depending on Supabase settings.
+              </p>
+            )}
           </form>
 
           <p style={{ textAlign: 'center', marginTop: 'var(--spacing-lg)', fontSize: 14, color: 'var(--color-text-secondary)' }}>
@@ -103,9 +109,14 @@ export default function ProfilePage() {
   }
 
   // Logged in — show profile
-  const results = session.results || [];
-  const profile = session.profile;
-  const latestResult = results[results.length - 1];
+  const results = getUserResults();
+  const profile = results.length ? {
+    latestCluster: results[results.length - 1].cluster,
+    latestEconomic: results[results.length - 1].economic,
+    latestSocial: results[results.length - 1].social,
+    closestFigures: results[results.length - 1].closestFigures || [],
+    topIssues: results[results.length - 1].topIssues || [],
+  } : null;
 
   return (
     <div className="container" style={{ padding: 'var(--spacing-3xl) 0', maxWidth: 760 }}>

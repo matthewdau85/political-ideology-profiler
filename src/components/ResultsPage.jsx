@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getPermalink, getStats } from '../utils/resultsStore';
+import { getPermalink, getStats, getAllResults } from '../utils/resultsStore';
 import figures from '../data/figures';
 import IdeologyScatter from '../charts/IdeologyScatter';
 import RadarAnalysis from '../charts/RadarAnalysis';
@@ -8,14 +8,23 @@ import AlignmentCard from './AlignmentCard';
 import ShareCardGenerator from './ShareCardGenerator';
 import AdSlot from './AdSlot';
 import { generatePDFReport } from '../utils/pdfReport';
+import { trackEvent, Events } from '../utils/analytics';
+import { generateComparativeInsights } from '../utils/comparativeInsights';
 
 export default function ResultsPage() {
   const { id } = useParams();
   const result = useMemo(() => getPermalink(id), [id]);
   const stats = useMemo(() => getStats(), []);
+  const allResults = useMemo(() => getAllResults(), []);
+
+  useEffect(() => {
+    if (result) trackEvent(Events.REPORT_VIEWED, { id: result.id, cluster: result.cluster, typology: result.typology });
+  }, [result]);
 
   if (!result) {
-    return (
+    const comparativeInsights = generateComparativeInsights(result, allResults);
+
+  return (
       <div className="container" style={{ padding: 'var(--spacing-3xl) 0', textAlign: 'center' }}>
         <h2>Result not found</h2>
         <p style={{ color: 'var(--color-text-secondary)', margin: 'var(--spacing-md) 0' }}>
@@ -30,6 +39,8 @@ export default function ResultsPage() {
     const full = figures.find(f => f.id === cf.id || f.name === cf.name);
     return full ? { ...full, ...cf } : cf;
   });
+
+  const comparativeInsights = generateComparativeInsights(result, allResults);
 
   return (
     <div className="results-page container">
@@ -59,6 +70,33 @@ export default function ResultsPage() {
           <span className="score-range mono">{result.social < 0 ? 'Progressive' : 'Conservative'}</span>
         </div>
       </div>
+
+
+      {/* Typology */}
+      {result.typology && (
+        <section className="results-section">
+          <h2 className="section-title">Political Typology</h2>
+          <div className="card">
+            <p><strong>Primary typology:</strong> {result.typology}</p>
+            {result.secondaryTypology && <p><strong>Secondary typology:</strong> {result.secondaryTypology}</p>}
+            {typeof result.typologyConfidence === 'number' && (
+              <p className="mono" style={{ color: 'var(--color-text-secondary)' }}>Confidence: {result.typologyConfidence}%</p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Comparative positioning */}
+      {comparativeInsights.length > 0 && (
+        <section className="results-section">
+          <h2 className="section-title">Comparative Positioning</h2>
+          <div className="card">
+            <ul style={{ paddingLeft: 'var(--spacing-lg)', lineHeight: 2, color: 'var(--color-text-secondary)' }}>
+              {comparativeInsights.map((line, i) => <li key={i}>{line}</li>)}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* Top alignment */}
       <section className="results-section">
@@ -104,7 +142,9 @@ export default function ResultsPage() {
                 { name: 'Movement Orientation', desc: 'Inclination toward grassroots activism and systemic change over incremental reform.' },
               ].map(d => {
                 const score = result.radarScores.find(r => r.dimension === d.name);
-                return (
+                const comparativeInsights = generateComparativeInsights(result, allResults);
+
+  return (
                   <div key={d.name} className="radar-legend-item">
                     <div className="radar-legend-header">
                       <span className="radar-legend-name">{d.name}</span>
@@ -184,7 +224,7 @@ export default function ResultsPage() {
       {/* Share card */}
       <section className="results-section">
         <h2 className="section-title">Share Your Results</h2>
-        <ShareCardGenerator result={result} />
+        <ShareCardGenerator result={{ ...result, comparativeInsights }} />
       </section>
 
       {/* Explore more */}

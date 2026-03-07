@@ -1,6 +1,6 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { getSession } from './utils/authStore';
+import { getSession, hydrateSession } from './utils/authStore';
 import CookieConsent from './components/CookieConsent';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -25,6 +25,7 @@ const PrivacyPage = lazy(() => import('./components/PrivacyPage'));
 const AboutPage = lazy(() => import('./components/AboutPage'));
 const TermsPage = lazy(() => import('./components/TermsPage'));
 const ContactPage = lazy(() => import('./components/ContactPage'));
+const InsightsPage = lazy(() => import('./components/InsightsPage'));
 
 function Loading() {
   return (
@@ -36,7 +37,13 @@ function Loading() {
 
 export default function App() {
   const location = useLocation();
-  const session = getSession();
+  const [session, setSession] = useState(getSession());
+
+  useEffect(() => {
+    hydrateSession().then((user) => {
+      if (user) setSession(user);
+    }).catch(() => {});
+  }, []);
 
   return (
     <div className="app">
@@ -49,6 +56,7 @@ export default function App() {
             <Link to="/quiz" className={`nav-link ${location.pathname === '/quiz' ? 'active' : ''}`}>Quiz</Link>
             <Link to="/methodology" className={`nav-link ${location.pathname === '/methodology' ? 'active' : ''}`}>Methodology</Link>
             <Link to="/map" className={`nav-link ${location.pathname === '/map' ? 'active' : ''}`}>Map</Link>
+            <Link to="/insights" className={`nav-link ${location.pathname === '/insights' ? 'active' : ''}`}>Insights</Link>
             <Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}>
               {session ? 'Profile' : 'Log In'}
             </Link>
@@ -70,10 +78,12 @@ export default function App() {
             <Route path="/country-comparison" element={<CountryComparison />} />
             <Route path="/country-comparison/:id" element={<CountryComparison />} />
             <Route path="/pricing" element={<PricingSection />} />
+            <Route path="/debate/new" element={<DebatePage />} />
             <Route path="/debate/:id" element={<DebatePage />} />
             <Route path="/compare/:id" element={<FriendCompare />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/map" element={<GlobalIdeologyMap />} />
+            <Route path="/insights" element={<InsightsPage />} />
             <Route path="/api/ideology-stats" element={<IdeologyStatsAPI />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -102,6 +112,7 @@ export default function App() {
             <div className="footer-links">
               <Link to="/about">About</Link>
               <Link to="/methodology">Methodology</Link>
+              <Link to="/insights">Insights</Link>
               <Link to="/api/ideology-stats">Stats</Link>
               <Link to="/privacy">Privacy</Link>
               <Link to="/terms">Terms</Link>

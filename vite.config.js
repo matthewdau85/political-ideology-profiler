@@ -9,11 +9,13 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.js'],
   },
   build: {
+    chunkSizeWarningLimit: 650,
     rollupOptions: {
       output: {
         manualChunks: {
           recharts: ['recharts'],
           maps: ['react-simple-maps'],
+          report: ['jspdf', 'html2canvas'],
         },
       },
     },
