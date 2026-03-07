@@ -2,7 +2,6 @@ import { hasSupabaseConfig, supabaseSignIn, supabaseSignUp, supabaseGetUser } fr
 
 const SESSION_CACHE_KEY = 'ideology_supabase_session_cache';
 const ACCESS_TOKEN_KEY = 'ideology_supabase_access_token';
-const USER_RESULTS_PREFIX = 'ideology_user_results';
 
 function getCachedSession() {
   try {
@@ -21,52 +20,72 @@ function setAccessToken(token) {
   else localStorage.removeItem(ACCESS_TOKEN_KEY);
 }
 
-function cacheSession(user) {
-  if (!user) {
+function cacheSession(session) {
+  if (!session) {
     localStorage.removeItem(SESSION_CACHE_KEY);
     return;
   }
-
-  localStorage.setItem(SESSION_CACHE_KEY, JSON.stringify({
-    id: user.id,
-    email: user.email,
-    createdAt: user.created_at,
-  }));
+  localStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(session));
 }
 
-function resultsKey(userId) {
-  return `${USER_RESULTS_PREFIX}:${userId}`;
-}
+async function apiRequest(path, { method = 'GET', body } = {}) {
+  const token = getAccessToken();
+  if (!token) throw new Error('Authentication required');
 
-function getResultsForUser(userId) {
-  try {
-    return JSON.parse(localStorage.getItem(resultsKey(userId)) || '[]');
-  } catch {
-    return [];
+  const res = await fetch(path, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  const payload = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(payload.error || 'Request failed');
   }
+
+  return payload;
 }
 
-function setResultsForUser(userId, results) {
-  localStorage.setItem(resultsKey(userId), JSON.stringify(results));
+function mapResultRow(row) {
+  return {
+    id: row.id,
+    economic: row.economic_score,
+    social: row.social_score,
+    cluster: row.ideological_cluster,
+    typology: row.typology,
+    secondaryTypology: row.secondary_typology,
+    typologyConfidence: row.typology_fit_score,
+    radarScores: row.radar_scores || [],
+    topIssues: row.top_issues || [],
+    country: row.country || 'Unknown',
+    ageBand: row.age_band || 'Unknown',
+    closestFigures: row.closest_figures || [],
+    methodologyVersion: row.methodology_version,
+    quizVersion: row.quiz_version,
+    timestamp: row.occurred_at || row.created_at,
+  };
 }
 
-function toSessionUser(user) {
-  if (!user) return null;
-  const results = getResultsForUser(user.id);
+function buildSession(user, profile, results) {
   const latest = results[results.length - 1] || null;
-
   return {
     id: user.id,
     email: user.email,
     createdAt: user.created_at,
+    profile: {
+      displayName: profile?.display_name || null,
+      country: profile?.country || null,
+      ageBand: profile?.age_band || null,
+      latestCluster: latest?.cluster || null,
+      latestEconomic: latest?.economic ?? null,
+      latestSocial: latest?.social ?? null,
+      closestFigures: latest?.closestFigures || [],
+      topIssues: latest?.topIssues || [],
+    },
     results,
-    profile: latest ? {
-      latestCluster: latest.cluster,
-      latestEconomic: latest.economic,
-      latestSocial: latest.social,
-      closestFigures: latest.closestFigures || [],
-      topIssues: latest.topIssues || [],
-    } : null,
   };
 }
 
@@ -75,17 +94,32 @@ export function getSession() {
 }
 
 export async function hydrateSession() {
-  if (!hasSupabaseConfig) return getCachedSession();
+  if (!hasSupabaseConfig) return null;
   const accessToken = getAccessToken();
   if (!accessToken) return null;
+
   const user = await supabaseGetUser(accessToken);
   if (!user) {
     setAccessToken(null);
     cacheSession(null);
     return null;
   }
-  cacheSession(user);
-  return toSessionUser(user);
+
+  try {
+    const [profileRes, resultsRes] = await Promise.all([
+      apiRequest('/api/me/profile'),
+      apiRequest('/api/me/results'),
+    ]);
+
+    const results = (resultsRes.results || []).map(mapResultRow);
+    const session = buildSession(user, profileRes.profile, results);
+    cacheSession(session);
+    return session;
+  } catch {
+    const fallbackSession = buildSession(user, null, getCachedSession()?.results || []);
+    cacheSession(fallbackSession);
+    return fallbackSession;
+  }
 }
 
 export async function createAccount(email, password) {
@@ -94,11 +128,15 @@ export async function createAccount(email, password) {
   }
 
   const data = await supabaseSignUp(email, password);
-  if (data.error) return { error: data.error_description || data.msg || 'Unable to create account' };
+  if (data.error) return { error: data.error };
 
-  if (data.access_token) setAccessToken(data.access_token);
-  cacheSession(data.user || null);
-  return { user: toSessionUser(data.user), needsEmailVerification: !data.access_token };
+  if (data.access_token) {
+    setAccessToken(data.access_token);
+    const hydrated = await hydrateSession();
+    return { user: hydrated, needsEmailVerification: false };
+  }
+
+  return { user: null, needsEmailVerification: true };
 }
 
 export async function login(email, password) {
@@ -107,12 +145,11 @@ export async function login(email, password) {
   }
 
   const data = await supabaseSignIn(email, password);
-  if (data.error) return { error: data.error_description || data.msg || 'Invalid email or password' };
+  if (data.error) return { error: data.error };
 
   setAccessToken(data.access_token);
-  const user = data.user || await supabaseGetUser(data.access_token);
-  cacheSession(user || null);
-  return { user: toSessionUser(user) };
+  const hydrated = await hydrateSession();
+  return { user: hydrated };
 }
 
 export async function logout() {
@@ -124,40 +161,47 @@ export function getAccessTokenForApi() {
   return getAccessToken();
 }
 
-export function saveUserResult(result) {
+export async function saveUserResult(result) {
   const session = getCachedSession();
   if (!session?.id) return null;
 
-  const entry = {
-    id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-    economic: result.economic,
-    social: result.social,
-    cluster: result.cluster,
-    timestamp: new Date().toISOString(),
-    topIssues: result.topIssues || [],
-    radarScores: result.radarScores || [],
-    closestFigures: result.closestFigures || [],
-  };
-
-  const results = getResultsForUser(session.id);
-  results.push(entry);
-  setResultsForUser(session.id, results);
-  return entry;
+  try {
+    const response = await apiRequest('/api/me/results', {
+      method: 'POST',
+      body: result,
+    });
+    const mapped = mapResultRow(response.result);
+    const updated = {
+      ...session,
+      results: [...(session.results || []), mapped],
+    };
+    cacheSession(updated);
+    return mapped;
+  } catch {
+    return null;
+  }
 }
 
 export function getUserResults() {
-  const session = getCachedSession();
-  if (!session?.id) return [];
-  return getResultsForUser(session.id);
+  return getCachedSession()?.results || [];
 }
 
-export function deleteUserData() {
+export async function deleteUserData() {
   const session = getCachedSession();
   if (!session?.id) return;
-  setResultsForUser(session.id, []);
+  try {
+    await apiRequest('/api/me/results', { method: 'DELETE' });
+  } catch {
+    // no-op
+  }
+  cacheSession({ ...session, results: [] });
 }
 
 export async function deleteAccount() {
-  deleteUserData();
+  try {
+    await apiRequest('/api/me/account', { method: 'DELETE' });
+  } catch {
+    // no-op
+  }
   await logout();
 }

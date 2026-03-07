@@ -28,7 +28,7 @@ async function sendEmail({ name, email, subject, message }) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      from: 'Political Ideology Profiler <noreply@politicalideologyprofiler.com>',
+      from: 'Ideology Compass <noreply@ideologycompass.com>',
       to: RECIPIENT,
       reply_to: email,
       subject: `[Contact] ${subject || 'General Inquiry'} — from ${name || 'Anonymous'}`,
