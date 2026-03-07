@@ -35,8 +35,8 @@ export default function ProfilePage() {
     setSession(null);
   };
 
-  const handleDeleteData = () => {
-    deleteUserData();
+  const handleDeleteData = async () => {
+    await deleteUserData();
     setSession(getSession());
     setShowDeleteConfirm(false);
   };
