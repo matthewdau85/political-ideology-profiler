@@ -1,12 +1,15 @@
 {
+  "id": "/",
   "name": "Political Ideology Profiler",
   "short_name": "Ideology Quiz",
-  "description": "Discover your political ideology through a research-grade 24-question quiz.",
+  "description": "Discover your political ideology through a transparent 24-question quiz.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
   "orientation": "portrait-primary",
+  "categories": ["education", "news", "social"],
   "icons": [
     {
       "src": "/icons/icon-192.png",

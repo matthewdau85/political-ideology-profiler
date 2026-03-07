@@ -1,5 +1,5 @@
 import { applyCors } from './_lib/cors';
-import { grantEntitlement, revokeEntitlement } from './_lib/entitlements';
+import { grantEntitlement, revokeEntitlement, recordPayment } from './_lib/entitlements';
 import { verifyStripeWebhookSignature } from './_lib/stripe';
 
 export const config = {
@@ -14,6 +14,13 @@ async function getRawBody(req) {
     chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
   }
   return Buffer.concat(chunks);
+}
+
+function sessionMetadata(session) {
+  return {
+    userId: session.metadata?.userId || null,
+    feature: session.metadata?.feature || null,
+  };
 }
 
 export default async function handler(req, res) {
@@ -38,39 +45,87 @@ export default async function handler(req, res) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
-        const feature = session.metadata?.feature;
-        const userId = session.metadata?.userId;
+        const { userId, feature } = sessionMetadata(session);
+
+        await recordPayment({
+          stripeEventId: event.id,
+          status: 'checkout_completed',
+          userId,
+          feature,
+          amountTotal: session.amount_total,
+          currency: session.currency,
+          stripeSessionId: session.id,
+          stripeCustomerId: session.customer || null,
+          stripeSubscriptionId: session.subscription || null,
+          stripePaymentIntentId: session.payment_intent || null,
+          metadata: session,
+          occurredAt: new Date(session.created * 1000).toISOString(),
+        });
+
         if (feature && userId) {
           await grantEntitlement(userId, feature, {
             source: event.type,
             stripeSessionId: session.id,
+            stripeCustomerId: session.customer || null,
+            stripeSubscriptionId: session.subscription || null,
+            stripePaymentIntentId: session.payment_intent || null,
             amountTotal: session.amount_total,
             currency: session.currency,
-            receiptEmail: session.customer_email,
           });
         }
         break;
       }
       case 'charge.refunded': {
         const charge = event.data.object;
-        const userId = charge.metadata?.userId;
-        const feature = charge.metadata?.feature;
+        const userId = charge.metadata?.userId || null;
+        const feature = charge.metadata?.feature || null;
+
+        await recordPayment({
+          stripeEventId: event.id,
+          status: 'charge_refunded',
+          userId,
+          feature,
+          amountTotal: charge.amount_refunded || charge.amount,
+          currency: charge.currency,
+          stripeCustomerId: charge.customer || null,
+          stripePaymentIntentId: charge.payment_intent || null,
+          metadata: charge,
+          occurredAt: new Date(charge.created * 1000).toISOString(),
+        });
+
         if (feature && userId) {
           await revokeEntitlement(userId, feature, {
             source: event.type,
-            stripeChargeId: charge.id,
+            stripeCustomerId: charge.customer || null,
+            stripePaymentIntentId: charge.payment_intent || null,
           });
         }
         break;
       }
       case 'customer.subscription.deleted':
       case 'invoice.payment_failed': {
-        const object = event.data.object;
-        const userId = object.metadata?.userId;
+        const obj = event.data.object;
+        const userId = obj.metadata?.userId || null;
+        const feature = 'premium_membership';
+
+        await recordPayment({
+          stripeEventId: event.id,
+          status: event.type,
+          userId,
+          feature,
+          amountTotal: obj.amount_due || obj.amount_paid || null,
+          currency: obj.currency || null,
+          stripeCustomerId: obj.customer || null,
+          stripeSubscriptionId: obj.subscription || obj.id || null,
+          metadata: obj,
+          occurredAt: new Date((obj.created || Date.now() / 1000) * 1000).toISOString(),
+        });
+
         if (userId) {
-          await revokeEntitlement(userId, 'premium_membership', {
+          await revokeEntitlement(userId, feature, {
             source: event.type,
-            stripeObjectId: object.id,
+            stripeCustomerId: obj.customer || null,
+            stripeSubscriptionId: obj.subscription || obj.id || null,
           });
         }
         break;
@@ -80,8 +135,8 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({ received: true });
-  } catch (error) {
-    console.error('stripe webhook error', error);
-    return res.status(500).json({ error: 'Webhook handling failed' });
+  } catch (err) {
+    console.error('stripe webhook error:', err);
+    return res.status(500).json({ error: 'Webhook processing failed' });
   }
 }
