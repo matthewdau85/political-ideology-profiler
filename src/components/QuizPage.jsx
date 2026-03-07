@@ -18,7 +18,7 @@ import { classifyCluster } from '../data/clusters';
 import { classifyTypology } from '../utils/typology';
 import figures from '../data/figures';
 import { saveResult, savePermalink, updateDebate, getDebateById } from '../utils/resultsStore';
-import { saveUserResult, getSession } from '../utils/authStore';
+import { useAuth } from '../hooks/useAuth';
 import { trackEvent, Events } from '../utils/analytics';
 import AdSlot from './AdSlot';
 import { submitAnonymousResult } from '../utils/dataCollect';
@@ -54,6 +54,7 @@ export default function QuizPage() {
   const [showCountry, setShowCountry] = useState(true);
   const [ageBand, setAgeBand] = useState('');
   const navigate = useNavigate();
+  const { user, saveResult: saveSupabaseResult } = useAuth();
 
   // Shuffle answer order once per quiz session
   const shuffledOrders = useMemo(() => buildShuffledOrders(questions), []);
@@ -115,9 +116,10 @@ export default function QuizPage() {
       quizVersion: resultData.quizVersion,
     });
 
-    const session = getSession();
-    if (session) {
-      saveUserResult(resultData);
+    if (user) {
+      saveSupabaseResult(resultData).catch((error) => {
+        if (import.meta.env.DEV) console.error('[quiz] failed to save Supabase result', error);
+      });
     }
 
     // Check if this quiz is part of a debate challenge
@@ -140,7 +142,7 @@ export default function QuizPage() {
     }
 
     navigate(`/results/${resultId}`);
-  }, [country, ageBand, importanceEverChanged, navigate]);
+  }, [country, ageBand, importanceEverChanged, navigate, saveSupabaseResult, user]);
 
   const handleNext = useCallback(() => {
     if (selectedAnswer === null) return;

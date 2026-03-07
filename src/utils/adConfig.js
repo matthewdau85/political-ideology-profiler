@@ -27,7 +27,7 @@ const adConfig = {
         enabled: true,
       },
       results_footer: {
-        text: 'Political Ideology Profiler — Open dataset for researchers',
+        text: 'Ideology Compass — Open dataset for researchers',
         link: '#',
         enabled: true,
       },

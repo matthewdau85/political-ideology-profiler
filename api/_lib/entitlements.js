@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { adminInsert, adminSelect } from './supabaseAdmin';
 
 const FEATURE_PRICE_MAP = {
   deep_analysis: process.env.STRIPE_PRICE_DEEP_ANALYSIS,
@@ -13,56 +13,103 @@ const PRICE_TO_FEATURE = Object.entries(FEATURE_PRICE_MAP).reduce((acc, [feature
   return acc;
 }, {});
 
-function getRedis() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
-}
-
-function keyForUser(userId) {
-  return `entitlements:${userId}`;
+function normalizeEntitlementRows(rows) {
+  const byFeature = {};
+  for (const row of rows || []) {
+    byFeature[row.feature] = {
+      active: Boolean(row.active),
+      feature: row.feature,
+      source: row.source,
+      stripeSessionId: row.stripe_session_id,
+      stripeCustomerId: row.stripe_customer_id,
+      stripeSubscriptionId: row.stripe_subscription_id,
+      stripePaymentIntentId: row.stripe_payment_intent_id,
+      grantedAt: row.granted_at,
+      revokedAt: row.revoked_at,
+      expiresAt: row.expires_at,
+      metadata: row.metadata || {},
+      updatedAt: row.updated_at,
+    };
+  }
+  return byFeature;
 }
 
 export async function listEntitlements(userId) {
-  const redis = getRedis();
-  if (!redis || !userId) return {};
-  return (await redis.hgetall(keyForUser(userId))) || {};
+  if (!userId) return {};
+  const rows = await adminSelect('entitlements', `user_id=eq.${encodeURIComponent(userId)}&select=*`);
+  return normalizeEntitlementRows(rows);
 }
 
 export async function hasEntitlement(userId, feature) {
   const all = await listEntitlements(userId);
-  const parse = (v) => {
-    if (!v) return null;
-    try { return typeof v === 'string' ? JSON.parse(v) : v; } catch { return null; }
-  };
-  const direct = parse(all[feature]);
-  const membership = parse(all.premium_membership);
+  const direct = all[feature];
+  const membership = all.premium_membership;
   return Boolean((direct && direct.active) || (membership && membership.active));
 }
 
 export async function grantEntitlement(userId, feature, receipt = {}) {
-  const redis = getRedis();
-  if (!redis || !userId || !feature) return;
-  await redis.hset(keyForUser(userId), {
-    [feature]: JSON.stringify({
+  if (!userId || !feature) return;
+  await adminInsert(
+    'entitlements',
+    {
+      user_id: userId,
+      feature,
       active: true,
-      grantedAt: new Date().toISOString(),
-      ...receipt,
-    }),
-  });
+      source: receipt.source || 'system',
+      stripe_session_id: receipt.stripeSessionId || null,
+      stripe_customer_id: receipt.stripeCustomerId || null,
+      stripe_subscription_id: receipt.stripeSubscriptionId || null,
+      stripe_payment_intent_id: receipt.stripePaymentIntentId || null,
+      granted_at: new Date().toISOString(),
+      revoked_at: null,
+      expires_at: receipt.expiresAt || null,
+      metadata: receipt,
+      updated_at: new Date().toISOString(),
+    },
+    { upsert: true, onConflict: 'user_id,feature' }
+  );
 }
 
 export async function revokeEntitlement(userId, feature, metadata = {}) {
-  const redis = getRedis();
-  if (!redis || !userId || !feature) return;
-  await redis.hset(keyForUser(userId), {
-    [feature]: JSON.stringify({
+  if (!userId || !feature) return;
+  await adminInsert(
+    'entitlements',
+    {
+      user_id: userId,
+      feature,
       active: false,
-      revokedAt: new Date().toISOString(),
-      ...metadata,
-    }),
-  });
+      source: metadata.source || 'system',
+      stripe_session_id: metadata.stripeSessionId || null,
+      stripe_customer_id: metadata.stripeCustomerId || null,
+      stripe_subscription_id: metadata.stripeSubscriptionId || null,
+      stripe_payment_intent_id: metadata.stripePaymentIntentId || null,
+      revoked_at: new Date().toISOString(),
+      metadata,
+      updated_at: new Date().toISOString(),
+    },
+    { upsert: true, onConflict: 'user_id,feature' }
+  );
+}
+
+export async function recordPayment(payment) {
+  await adminInsert(
+    'payments',
+    {
+      user_id: payment.userId || null,
+      feature: payment.feature || null,
+      status: payment.status || 'unknown',
+      amount_total: payment.amountTotal || null,
+      currency: payment.currency || null,
+      stripe_event_id: payment.stripeEventId || null,
+      stripe_session_id: payment.stripeSessionId || null,
+      stripe_customer_id: payment.stripeCustomerId || null,
+      stripe_subscription_id: payment.stripeSubscriptionId || null,
+      stripe_payment_intent_id: payment.stripePaymentIntentId || null,
+      metadata: payment.metadata || {},
+      occurred_at: payment.occurredAt || new Date().toISOString(),
+    },
+    { upsert: true, onConflict: 'stripe_event_id' }
+  );
 }
 
 export function getFeatureFromPriceId(priceId) {
