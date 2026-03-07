@@ -1,29 +1,62 @@
-const requiredClientEnv = {
-  VITE_SUPABASE_URL: 'Supabase project URL for secure authentication.',
-  VITE_SUPABASE_ANON_KEY: 'Supabase anon key for client auth sessions.',
+const REQUIRED_CLIENT_ENV = {
+  VITE_SUPABASE_URL: 'Supabase project URL (https://<project-ref>.supabase.co).',
+  VITE_SUPABASE_ANON_KEY: 'Supabase anon/public key used by the browser client.',
 };
 
-export function getEnv(name, fallback = '') {
-  const value = import.meta.env[name];
-  return typeof value === 'string' ? value : fallback;
+function normalize(value) {
+  if (typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  if (!trimmed || trimmed === 'undefined' || trimmed === 'null') return '';
+  return trimmed;
 }
 
-export function validateClientEnv() {
-  const missing = Object.keys(requiredClientEnv).filter((key) => !getEnv(key));
-  if (missing.length === 0) return { ok: true, missing: [] };
+export function readClientEnv(name) {
+  return normalize(import.meta.env[name]);
+}
 
-  const isProd = import.meta.env.PROD;
-  if (isProd) {
-    console.error('[env] Missing required environment variables:', missing.join(', '));
-  }
-
+export function getClientConfig() {
   return {
-    ok: !isProd,
-    missing,
-    message: missing.map((key) => `${key}: ${requiredClientEnv[key]}`).join('\n'),
+    supabaseUrl: readClientEnv('VITE_SUPABASE_URL'),
+    supabaseAnonKey: readClientEnv('VITE_SUPABASE_ANON_KEY'),
+    stripePublishableKey: readClientEnv('VITE_STRIPE_PUBLISHABLE_KEY'),
+    mode: import.meta.env.MODE,
+    isProd: Boolean(import.meta.env.PROD),
   };
 }
 
+export function validateClientEnv() {
+  const missing = Object.keys(REQUIRED_CLIENT_ENV).filter((key) => !readClientEnv(key));
+  const { isProd, mode } = getClientConfig();
+
+  const details = missing.map((key) => `${key}: ${REQUIRED_CLIENT_ENV[key]}`);
+
+  return {
+    ok: missing.length === 0,
+    missing,
+    mode,
+    isProd,
+    details,
+    summary:
+      missing.length === 0
+        ? 'All required client environment variables are present.'
+        : `Missing required client environment variables: ${missing.join(', ')}`,
+  };
+}
+
+
+export function getEnv(name, fallback = '') {
+  const value = readClientEnv(name);
+  return value || fallback;
+}
+
+export function assertClientEnv() {
+  const status = validateClientEnv();
+  if (!status.ok) {
+    throw new Error(status.summary);
+  }
+  return getClientConfig();
+}
+
 export function stripePublishableKey() {
-  return getEnv('VITE_STRIPE_PUBLISHABLE_KEY') || getEnv('VITE_STRIPE_PUBLIC_KEY');
+  return readClientEnv('VITE_STRIPE_PUBLISHABLE_KEY');
 }
