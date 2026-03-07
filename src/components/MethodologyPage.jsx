@@ -12,7 +12,7 @@ export default function MethodologyPage() {
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>Two-Axis Political Model</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
-          The Political Ideology Profiler uses a two-dimensional model to classify political ideology.
+          The Ideology Compass uses a two-dimensional model to classify political ideology.
           The <strong>economic axis</strong> ranges from left-leaning (-10) to right-leaning (+10).
           The <strong>social axis</strong> ranges from progressive (-10) to conservative (+10).
         </p>
