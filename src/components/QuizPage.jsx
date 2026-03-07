@@ -15,6 +15,7 @@ function buildShuffledOrders(qs) {
 }
 import { calculateResults, calculateRadarScores, findClosestFigures, deriveTopIssues } from '../utils/calcResults';
 import { classifyCluster } from '../data/clusters';
+import { classifyTypology } from '../utils/typology';
 import figures from '../data/figures';
 import { saveResult, savePermalink, updateDebate, getDebateById } from '../utils/resultsStore';
 import { saveUserResult, getSession } from '../utils/authStore';
@@ -51,6 +52,7 @@ export default function QuizPage() {
   const [showPause, setShowPause] = useState(false);
   const [country, setCountry] = useState('');
   const [showCountry, setShowCountry] = useState(true);
+  const [ageBand, setAgeBand] = useState('');
   const navigate = useNavigate();
 
   // Shuffle answer order once per quiz session
@@ -70,6 +72,7 @@ export default function QuizPage() {
     const clustersResult = classifyCluster(economic, social);
     const topIssues = deriveTopIssues(finalAnswers, questions);
     const topCluster = clustersResult[0];
+    const typology = classifyTypology({ economic, social, radarScores, topIssues });
 
     const resultId = crypto.randomUUID?.() || Math.random().toString(36).slice(2, 10);
 
@@ -88,6 +91,12 @@ export default function QuizPage() {
       importanceUsed: importanceEverChanged,
       timestamp: new Date().toISOString(),
       answers: finalAnswers,
+      typology: typology.primary,
+      secondaryTypology: typology.secondary,
+      typologyConfidence: typology.confidence,
+      ageBand: ageBand || 'Unknown',
+      methodologyVersion: '2026.1',
+      quizVersion: '2.1',
     };
 
     saveResult(resultData);
@@ -99,6 +108,11 @@ export default function QuizPage() {
       social: resultData.social,
       cluster: resultData.cluster,
       country: resultData.country,
+      typology: resultData.typology,
+      topIssues: resultData.topIssues,
+      ageBand: resultData.ageBand,
+      methodologyVersion: resultData.methodologyVersion,
+      quizVersion: resultData.quizVersion,
     });
 
     const session = getSession();
@@ -126,7 +140,7 @@ export default function QuizPage() {
     }
 
     navigate(`/results/${resultId}`);
-  }, [country, importanceEverChanged, navigate]);
+  }, [country, ageBand, importanceEverChanged, navigate]);
 
   const handleNext = useCallback(() => {
     if (selectedAnswer === null) return;
@@ -264,6 +278,23 @@ export default function QuizPage() {
               <option value="Trinidad and Tobago">Trinidad and Tobago</option>
             </optgroup>
             <option value="Other">Other</option>
+          </select>
+          <label className="mono" style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-md)', display: 'block' }}>
+            Age band (optional)
+          </label>
+          <select
+            value={ageBand}
+            onChange={(e) => setAgeBand(e.target.value)}
+            className="input-field"
+            style={{ marginBottom: 'var(--spacing-md)' }}
+          >
+            <option value="">Prefer not to say</option>
+            <option value="18-24">18-24</option>
+            <option value="25-34">25-34</option>
+            <option value="35-44">35-44</option>
+            <option value="45-54">45-54</option>
+            <option value="55-64">55-64</option>
+            <option value="65+">65+</option>
           </select>
           <div className="privacy-notice">
             Your answers are anonymous. We don't collect personal data unless you choose to create an account.

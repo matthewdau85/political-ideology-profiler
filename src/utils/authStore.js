@@ -1,83 +1,132 @@
-// Auth system — localStorage mock compatible with Supabase migration
-// Stores user accounts and profiles for ideology tracking
+import { hasSupabaseConfig, supabaseSignIn, supabaseSignUp, supabaseGetUser } from './supabaseClient';
 
-const USERS_KEY = 'ideology_users';
-const SESSION_KEY = 'ideology_session';
+const SESSION_CACHE_KEY = 'ideology_supabase_session_cache';
+const ACCESS_TOKEN_KEY = 'ideology_supabase_access_token';
+const USER_RESULTS_PREFIX = 'ideology_user_results';
 
-function getUsers() {
+function getCachedSession() {
   try {
-    return JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-  } catch {
-    return {};
-  }
-}
-
-function setUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-export function createAccount(email, password) {
-  const users = getUsers();
-  if (users[email]) {
-    return { error: 'Account already exists' };
-  }
-  users[email] = {
-    id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-    email,
-    passwordHash: btoa(password), // mock hash — use bcrypt/Supabase in production
-    createdAt: new Date().toISOString(),
-    results: [],
-    profile: null,
-  };
-  setUsers(users);
-  setSession(users[email]);
-  return { user: sanitizeUser(users[email]) };
-}
-
-export function login(email, password) {
-  const users = getUsers();
-  const user = users[email];
-  if (!user || btoa(password) !== user.passwordHash) {
-    return { error: 'Invalid email or password' };
-  }
-  setSession(user);
-  return { user: sanitizeUser(user) };
-}
-
-export function logout() {
-  localStorage.removeItem(SESSION_KEY);
-}
-
-export function getSession() {
-  try {
-    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-    return session ? sanitizeUser(session) : null;
+    return JSON.parse(localStorage.getItem(SESSION_CACHE_KEY) || 'null');
   } catch {
     return null;
   }
 }
 
-function setSession(user) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify(sanitizeUser(user)));
+function getAccessToken() {
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
-function sanitizeUser(user) {
+function setAccessToken(token) {
+  if (token) localStorage.setItem(ACCESS_TOKEN_KEY, token);
+  else localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
+function cacheSession(user) {
+  if (!user) {
+    localStorage.removeItem(SESSION_CACHE_KEY);
+    return;
+  }
+
+  localStorage.setItem(SESSION_CACHE_KEY, JSON.stringify({
+    id: user.id,
+    email: user.email,
+    createdAt: user.created_at,
+  }));
+}
+
+function resultsKey(userId) {
+  return `${USER_RESULTS_PREFIX}:${userId}`;
+}
+
+function getResultsForUser(userId) {
+  try {
+    return JSON.parse(localStorage.getItem(resultsKey(userId)) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function setResultsForUser(userId, results) {
+  localStorage.setItem(resultsKey(userId), JSON.stringify(results));
+}
+
+function toSessionUser(user) {
+  if (!user) return null;
+  const results = getResultsForUser(user.id);
+  const latest = results[results.length - 1] || null;
+
   return {
     id: user.id,
     email: user.email,
-    createdAt: user.createdAt,
-    results: user.results || [],
-    profile: user.profile,
+    createdAt: user.created_at,
+    results,
+    profile: latest ? {
+      latestCluster: latest.cluster,
+      latestEconomic: latest.economic,
+      latestSocial: latest.social,
+      closestFigures: latest.closestFigures || [],
+      topIssues: latest.topIssues || [],
+    } : null,
   };
 }
 
-export function saveUserResult(result) {
-  const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-  if (!session) return null;
+export function getSession() {
+  return getCachedSession();
+}
 
-  const users = getUsers();
-  const user = users[session.email];
-  if (!user) return null;
+export async function hydrateSession() {
+  if (!hasSupabaseConfig) return getCachedSession();
+  const accessToken = getAccessToken();
+  if (!accessToken) return null;
+  const user = await supabaseGetUser(accessToken);
+  if (!user) {
+    setAccessToken(null);
+    cacheSession(null);
+    return null;
+  }
+  cacheSession(user);
+  return toSessionUser(user);
+}
+
+export async function createAccount(email, password) {
+  if (!hasSupabaseConfig) {
+    return { error: 'Authentication is not configured. Set Supabase environment variables.' };
+  }
+
+  const data = await supabaseSignUp(email, password);
+  if (data.error) return { error: data.error_description || data.msg || 'Unable to create account' };
+
+  if (data.access_token) setAccessToken(data.access_token);
+  cacheSession(data.user || null);
+  return { user: toSessionUser(data.user), needsEmailVerification: !data.access_token };
+}
+
+export async function login(email, password) {
+  if (!hasSupabaseConfig) {
+    return { error: 'Authentication is not configured. Set Supabase environment variables.' };
+  }
+
+  const data = await supabaseSignIn(email, password);
+  if (data.error) return { error: data.error_description || data.msg || 'Invalid email or password' };
+
+  setAccessToken(data.access_token);
+  const user = data.user || await supabaseGetUser(data.access_token);
+  cacheSession(user || null);
+  return { user: toSessionUser(user) };
+}
+
+export async function logout() {
+  setAccessToken(null);
+  cacheSession(null);
+}
+
+export function getAccessTokenForApi() {
+  return getAccessToken();
+}
+
+export function saveUserResult(result) {
+  const session = getCachedSession();
+  if (!session?.id) return null;
 
   const entry = {
     id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
@@ -90,47 +139,25 @@ export function saveUserResult(result) {
     closestFigures: result.closestFigures || [],
   };
 
-  user.results = user.results || [];
-  user.results.push(entry);
-  user.profile = {
-    latestCluster: result.cluster,
-    latestEconomic: result.economic,
-    latestSocial: result.social,
-    closestFigures: result.closestFigures || [],
-    topIssues: result.topIssues || [],
-  };
-
-  users[session.email] = user;
-  setUsers(users);
-  setSession(user);
+  const results = getResultsForUser(session.id);
+  results.push(entry);
+  setResultsForUser(session.id, results);
   return entry;
 }
 
 export function getUserResults() {
-  const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-  if (!session) return [];
-  return session.results || [];
+  const session = getCachedSession();
+  if (!session?.id) return [];
+  return getResultsForUser(session.id);
 }
 
 export function deleteUserData() {
-  const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-  if (!session) return;
-
-  const users = getUsers();
-  if (users[session.email]) {
-    users[session.email].results = [];
-    users[session.email].profile = null;
-    setUsers(users);
-    setSession(users[session.email]);
-  }
+  const session = getCachedSession();
+  if (!session?.id) return;
+  setResultsForUser(session.id, []);
 }
 
-export function deleteAccount() {
-  const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-  if (!session) return;
-
-  const users = getUsers();
-  delete users[session.email];
-  setUsers(users);
-  logout();
+export async function deleteAccount() {
+  deleteUserData();
+  await logout();
 }

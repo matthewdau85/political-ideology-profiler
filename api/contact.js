@@ -3,6 +3,8 @@
 // otherwise stores messages in Upstash Redis for later retrieval.
 
 import { Redis } from '@upstash/redis';
+import { applyCors } from './_lib/cors';
+import { checkRateLimit } from './_lib/rateLimit';
 
 const CONTACT_KEY = 'contact_messages';
 const MAX_MESSAGES = 500;
@@ -47,11 +49,18 @@ async function sendEmail({ name, email, subject, message }) {
 }
 
 export default async function handler(req, res) {
+  if (!applyCors(req, res, ['POST'])) return;
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, subject, message } = req.body || {};
+  if (!(await checkRateLimit(req, res, 'contact', { limit: 10, window: '1 m' }))) return;
+
+  const { name, email, subject, message, website } = req.body || {};
+
+  if (website) {
+    return res.status(400).json({ error: 'Bot detected' });
+  }
 
   if (!email || !message) {
     return res.status(400).json({ error: 'Email and message are required' });
