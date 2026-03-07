@@ -7,10 +7,10 @@ export default function PrivacyPage() {
   const [deleted, setDeleted] = useState(false);
   const session = getSession();
 
-  const handleDeleteAll = () => {
+  const handleDeleteAll = async () => {
     deleteAllResults();
     if (session) {
-      deleteAccount();
+      await deleteAccount();
     }
     setDeleted(true);
   };
