@@ -10,7 +10,7 @@ export default function LandingPage() {
       <header className="landing-header">
         <div className="container">
           <p className="landing-label mono">Political Quiz &amp; Analysis Tool</p>
-          <h1 className="landing-title">Political Ideology Profiler</h1>
+          <h1 className="landing-title">Ideology Compass</h1>
           <p className="landing-subtitle">
             Find out where you stand politically. Compare your views with
             historical figures, discover your ideological group, and see how

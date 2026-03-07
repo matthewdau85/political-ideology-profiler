@@ -1,6 +1,6 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { getSession, hydrateSession } from './utils/authStore';
+import { useAuth } from './hooks/useAuth';
 import CookieConsent from './components/CookieConsent';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -37,20 +37,14 @@ function Loading() {
 
 export default function App() {
   const location = useLocation();
-  const [session, setSession] = useState(getSession());
-
-  useEffect(() => {
-    hydrateSession().then((user) => {
-      if (user) setSession(user);
-    }).catch(() => {});
-  }, []);
+  const { user, loading } = useAuth();
 
   return (
     <div className="app">
       <nav className="app-nav">
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link to="/" className="nav-logo">
-            <span className="nav-logo-text">Political Ideology Profiler</span>
+            <span className="nav-logo-text">Ideology Compass</span>
           </Link>
           <div className="nav-links">
             <Link to="/quiz" className={`nav-link ${location.pathname === '/quiz' ? 'active' : ''}`}>Quiz</Link>
@@ -58,13 +52,14 @@ export default function App() {
             <Link to="/map" className={`nav-link ${location.pathname === '/map' ? 'active' : ''}`}>Map</Link>
             <Link to="/insights" className={`nav-link ${location.pathname === '/insights' ? 'active' : ''}`}>Insights</Link>
             <Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}>
-              {session ? 'Profile' : 'Log In'}
+              {user ? 'Profile' : 'Log In'}
             </Link>
           </div>
         </div>
       </nav>
 
       <main>
+        {loading ? <Loading /> : (
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -100,13 +95,14 @@ export default function App() {
             } />
           </Routes>
         </Suspense>
+        )}
       </main>
 
       <footer className="app-footer">
         <div className="container">
           <div className="footer-content">
             <div className="footer-left">
-              <span className="mono footer-label">Political Ideology Profiler</span>
+              <span className="mono footer-label">Ideology Compass</span>
               <span className="footer-copy">A political quiz and analysis tool</span>
             </div>
             <div className="footer-links">

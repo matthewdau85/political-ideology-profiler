@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { deleteAllResults } from '../utils/resultsStore';
-import { deleteAccount, getSession } from '../utils/authStore';
+import { useAuth } from '../hooks/useAuth';
 
 export default function PrivacyPage() {
   const [deleted, setDeleted] = useState(false);
-  const session = getSession();
+  const { user, clearResults, removeAccount } = useAuth();
 
-  const handleDeleteAll = () => {
+  const handleDeleteAll = async () => {
     deleteAllResults();
-    if (session) {
-      deleteAccount();
+    if (user) {
+      await clearResults();
+      await removeAccount();
     }
     setDeleted(true);
   };
@@ -25,7 +26,7 @@ export default function PrivacyPage() {
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>What We Collect</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
-          The Political Ideology Profiler collects only the minimum data necessary to function.
+          The Ideology Compass collects only the minimum data necessary to function.
           Your full quiz results are stored locally in your browser. If you accept cookies,
           we also send a small amount of <strong>anonymized</strong> data to our server to
           build aggregate statistics (see "Data We Send to Our Server" below).
@@ -136,7 +137,7 @@ export default function PrivacyPage() {
         </p>
       </div>
 
-      {session && (
+      {user && (
         <div className="card" style={{ borderColor: 'var(--color-danger)', borderStyle: 'dashed' }}>
           <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)', color: 'var(--color-danger)' }}>
             Delete Your Data
