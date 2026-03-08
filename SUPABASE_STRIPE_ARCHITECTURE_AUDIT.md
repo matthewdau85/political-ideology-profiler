@@ -10,6 +10,25 @@
   - `PRODUCTION_VALIDATION_REPORT.md`
   - `FINAL_PRODUCTION_READINESS_REVIEW.md`
 
+## 0.1 Reconciliation Addendum (2026-03-08)
+This audit originally captured a pre-hardening posture and included findings now superseded by implemented controls.
+
+**Current authoritative verdict:** **Controlled production ready** (not yet fully production hardened).
+
+### Findings now closed
+- Webhook verification now supports timestamp tolerance and multi-signature `v1` parsing with timing-safe comparison.
+- Webhook processing uses an idempotency ledger (`processed_webhook_events`) and duplicate short-circuiting.
+- Rate limiting honors configured windows (`s/m/h/d`) rather than a fixed 60s interpretation.
+- Sensitive write endpoints now enforce stricter request validation, score bounds, and optional CAPTCHA gates.
+- CORS enforcement now rejects disallowed explicit origins.
+
+### Findings still open (non-code evidence gates)
+- Live Stripe replay evidence in a real Stripe environment.
+- Production observability activation evidence (alerts/pages/dashboards).
+- Formal legal counsel sign-off evidence.
+
+> Note: Where older sections below conflict with this addendum, this addendum is the current source of truth.
+
 ## 0. Revalidation Addendum (2026-03-07)
 - Webhook signature now includes timestamp tolerance and timing-safe comparison.
 - Processed webhook event ledger now enforces idempotent processing states.
