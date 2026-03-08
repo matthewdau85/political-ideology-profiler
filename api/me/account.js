@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   if (req.method !== 'DELETE') return res.status(405).json({ error: 'Method not allowed' });
   if (!(await checkRateLimit(req, res, 'me-account-delete', { limit: 10, window: '1 h' }))) return;
 
-  if (!(await requireCaptcha(req, res))) return;
+  if (!(await requireCaptcha(req, res, { required: true }))) return;
 
   const user = await getAuthenticatedUser(req);
   if (!user) return res.status(401).json({ error: 'Authentication required' });

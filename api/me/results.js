@@ -3,8 +3,13 @@ import { checkRateLimit } from '../_lib/rateLimit';
 import { getAuthenticatedUser } from '../_lib/auth';
 import { adminDelete, adminInsert, adminSelect } from '../_lib/supabaseAdmin';
 import { requireCaptcha } from '../_lib/botProtection';
+import { inRangeNumber, rejectUnexpectedKeys } from '../_lib/validation';
 
 function sanitizeResult(result = {}) {
+  if (!inRangeNumber(result.economic, -10, 10) || !inRangeNumber(result.social, -10, 10)) {
+    throw new Error('Invalid score range');
+  }
+
   return {
     economic_score: Number(result.economic),
     social_score: Number(result.social),
@@ -41,7 +46,8 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      if (!(await requireCaptcha(req, res))) return;
+      if (rejectUnexpectedKeys(res, req.body || {}, ['id','economic','social','cluster','clusterColor','clusterDescription','clusters','closestFigures','radarScores','topIssues','country','importanceUsed','timestamp','answers','typology','secondaryTypology','typologyConfidence','ageBand','methodologyVersion','quizVersion','captchaToken'])) return;
+      if (!(await requireCaptcha(req, res, { required: true }))) return;
       const payload = sanitizeResult(req.body || {});
       const [saved] = await adminInsert('quiz_results', {
         user_id: user.id,

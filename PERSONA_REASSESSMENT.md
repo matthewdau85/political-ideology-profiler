@@ -25,7 +25,7 @@ Assumption: latest hardening changes and reports are applied.
 
 ### Security Engineer
 - Evaluation summary: security posture improved with replay protection, captcha capability, and server authority.
-- Strengths: webhook verification, idempotency, service-role boundary maintained.
+- Strengths: webhook verification, idempotency, service-role boundary maintained, request validation hardening added.
 - Remaining concerns: XSS/token risk remains an architectural concern; enable strict CSP + short session TTL to reduce blast radius further.
 - Final verdict: **Controlled production acceptable with tracked residual risk**.
 

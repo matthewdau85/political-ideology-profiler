@@ -278,6 +278,9 @@ export default async function handler(req, res) {
   }
 
   const rawBody = await getRawBody(req);
+  if (rawBody.length > 256 * 1024) {
+    return res.status(413).json({ error: 'Webhook payload too large' });
+  }
   const valid = verifyStripeWebhookSignature(rawBody, signature, webhookSecret);
   if (!valid) {
     return res.status(400).json({ error: 'Invalid webhook signature' });

@@ -10,6 +10,9 @@ Date: 2026-03-07
 5. Client-side auth cache misuse risk.
 
 ## Implemented fixes
+- Request-shape validation added on sensitive endpoints to reject unexpected fields.
+- Webhook body size guard added (413 on oversized payloads).
+- CORS now explicitly rejects disallowed `Origin` values.
 - Stripe webhook verification includes signature + timestamp tolerance checks and timing-safe compare.
 - Webhook idempotency ledger implemented through `processed_webhook_events` state (`processing|processed|failed`).
 - Rate limiter now parses configured windows (`s/m/h/d`) and enforces bucketized limits correctly.

@@ -1,6 +1,6 @@
 # Final Production Readiness Review
 
-Date: 2026-03-08
+Date: 2026-03-08 (updated)
 
 ## 1) System overview
 The platform uses React/Vite frontend, Vercel serverless APIs, Supabase Auth/Postgres, and Stripe Checkout + signed webhook fulfillment.
@@ -12,6 +12,8 @@ The platform uses React/Vite frontend, Vercel serverless APIs, Supabase Auth/Pos
 - Security response headers added at Vercel edge level.
 - Admin token comparison hardened with timing-safe logic.
 - Optional CAPTCHA verification path implemented for sensitive endpoints.
+- Request-shape validation and payload-size guards added to sensitive APIs.
+- CORS hardening now rejects disallowed explicit origins.
 - Expanded hardening reports for security, observability, legal, methodology, data governance, PWA, and ad compliance.
 
 ## 3) Remaining risks

@@ -6,6 +6,7 @@ import { getPriceForProduct, validFeatures } from '../_lib/entitlements';
 import { normalizeProductKey } from '../_lib/billingConfig';
 import { validateServerEnv } from '../_lib/serverEnv';
 import { requireCaptcha } from '../_lib/botProtection';
+import { rejectUnexpectedKeys } from '../_lib/validation';
 
 export default async function handler(req, res) {
   if (!applyCors(req, res, ['POST'])) return;
@@ -21,7 +22,8 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!(await requireCaptcha(req, res))) return;
+  if (rejectUnexpectedKeys(res, req.body || {}, ['productKey', 'feature', 'captchaToken'])) return;
+  if (!(await requireCaptcha(req, res, { required: true }))) return;
 
   try {
     const requestedProduct = req.body?.productKey || req.body?.feature;

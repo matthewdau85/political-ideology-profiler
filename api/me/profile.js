@@ -2,6 +2,8 @@ import { applyCors } from '../_lib/cors';
 import { checkRateLimit } from '../_lib/rateLimit';
 import { getAuthenticatedUser } from '../_lib/auth';
 import { adminInsert, adminSelect } from '../_lib/supabaseAdmin';
+import { requireCaptcha } from '../_lib/botProtection';
+import { rejectUnexpectedKeys } from '../_lib/validation';
 
 function sanitizeProfile(body = {}) {
   return {
@@ -28,6 +30,8 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PATCH') {
+      if (rejectUnexpectedKeys(res, req.body || {}, ['displayName','country','ageBand','methodologyVersion','quizVersion','captchaToken'])) return;
+      if (!(await requireCaptcha(req, res, { required: true }))) return;
       const payload = sanitizeProfile(req.body || {});
       const [profile] = await adminInsert('profiles', {
         id: user.id,

@@ -6,6 +6,7 @@ import { Redis } from '@upstash/redis';
 import { applyCors } from './_lib/cors';
 import { checkRateLimit } from './_lib/rateLimit';
 import { requireCaptcha } from './_lib/botProtection';
+import { rejectUnexpectedKeys } from './_lib/validation';
 
 const CONTACT_KEY = 'contact_messages';
 const MAX_MESSAGES = 500;
@@ -57,9 +58,12 @@ export default async function handler(req, res) {
 
   if (!(await checkRateLimit(req, res, 'contact', { limit: 10, window: '1 m' }))) return;
 
-  const { name, email, subject, message, website } = req.body || {};
+  const body = req.body || {};
+  if (rejectUnexpectedKeys(res, body, ['name', 'email', 'subject', 'message', 'website', 'captchaToken'])) return;
 
-  if (!(await requireCaptcha(req, res))) return;
+  const { name, email, subject, message, website } = body;
+
+  if (!(await requireCaptcha(req, res, { required: true }))) return;
 
   if (website) {
     return res.status(400).json({ error: 'Bot detected' });
