@@ -5,6 +5,7 @@
 import { Redis } from '@upstash/redis';
 import { applyCors } from './_lib/cors';
 import { checkRateLimit } from './_lib/rateLimit';
+import { requireCaptcha } from './_lib/botProtection';
 
 const CONTACT_KEY = 'contact_messages';
 const MAX_MESSAGES = 500;
@@ -28,7 +29,7 @@ async function sendEmail({ name, email, subject, message }) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      from: 'Political Ideology Profiler <noreply@politicalideologyprofiler.com>',
+      from: 'Ideology Compass <noreply@ideologycompass.com>',
       to: RECIPIENT,
       reply_to: email,
       subject: `[Contact] ${subject || 'General Inquiry'} — from ${name || 'Anonymous'}`,
@@ -57,6 +58,8 @@ export default async function handler(req, res) {
   if (!(await checkRateLimit(req, res, 'contact', { limit: 10, window: '1 m' }))) return;
 
   const { name, email, subject, message, website } = req.body || {};
+
+  if (!(await requireCaptcha(req, res))) return;
 
   if (website) {
     return res.status(400).json({ error: 'Bot detected' });

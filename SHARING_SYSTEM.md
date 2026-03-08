@@ -11,4 +11,4 @@
 - LinkedIn
 
 ## Example Share Copy
-"I just took the Political Ideology Profiler and landed near Olof Palme and Gough Whitlam."
+"I just took the Ideology Compass and landed near Olof Palme and Gough Whitlam."
