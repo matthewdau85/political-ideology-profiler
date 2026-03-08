@@ -27,7 +27,7 @@ export default function ShareCardGenerator({ result }) {
     `Economic: ${result.economic > 0 ? '+' : ''}${result.economic} | Social: ${result.social > 0 ? '+' : ''}${result.social}.`,
     `Closest alignment: ${result.closestFigures?.[0]?.name || 'N/A'}.`,
     comparativeLine,
-    'Take the Political Ideology Profiler:',
+    'Take the Ideology Compass:',
   ].filter(Boolean).join(' ');
 
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/results/${result.id}` : '';
@@ -37,7 +37,7 @@ export default function ShareCardGenerator({ result }) {
   };
 
   const shareToReddit = () => {
-    window.open(`https://www.reddit.com/submit?title=${encodeURIComponent(`I am a ${result.cluster} — Political Ideology Profiler`)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+    window.open(`https://www.reddit.com/submit?title=${encodeURIComponent(`I am a ${result.cluster} — Ideology Compass`)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
   };
 
   const shareToLinkedIn = () => {
@@ -51,7 +51,7 @@ export default function ShareCardGenerator({ result }) {
         maxWidth: 520, fontFamily: "'IBM Plex Sans', sans-serif",
       }}>
         <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: '#c4a035', marginBottom: 8 }}>
-          Political Ideology Profiler
+          Ideology Compass
         </div>
         <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 600, marginBottom: 4 }}>
           {result.cluster}

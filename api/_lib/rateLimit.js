@@ -13,6 +13,16 @@ function getRedis() {
   return new Redis({ url, token });
 }
 
+function parseWindowToSeconds(windowValue = '1 m') {
+  const value = String(windowValue).trim().toLowerCase();
+  const match = value.match(/^(\d+)\s*([smhd])$/);
+  if (!match) return 60;
+  const amount = Number(match[1]);
+  const unit = match[2];
+  const factors = { s: 1, m: 60, h: 3600, d: 86400 };
+  return amount * factors[unit];
+}
+
 function inMemoryLimit(key, limit = 30, windowMs = 60_000) {
   const now = Date.now();
   const entry = memoryHits.get(key) || { count: 0, resetAt: now + windowMs };
@@ -37,10 +47,10 @@ async function redisLimit(key, limit = 30, windowSeconds = 60) {
 
 export async function checkRateLimit(req, res, keyPrefix, options = { limit: 30, window: '1 m' }) {
   const identifier = getIdentifier(req);
-  const key = `${keyPrefix}:${identifier}`;
-
   const limit = options.limit || 30;
-  const windowSeconds = 60;
+  const windowSeconds = parseWindowToSeconds(options.window || '1 m');
+  const bucket = Math.floor(Date.now() / (windowSeconds * 1000));
+  const key = `${keyPrefix}:${identifier}:${bucket}`;
 
   const redisResult = await redisLimit(key, limit, windowSeconds);
   const result = redisResult || inMemoryLimit(key, limit, windowSeconds * 1000);

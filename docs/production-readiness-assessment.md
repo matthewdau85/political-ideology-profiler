@@ -1,4 +1,4 @@
-# Political Ideology Profiler — Production Readiness Assessment
+# Ideology Compass — Production Readiness Assessment
 
 Date: 2026-03-07
 Assessor roles: senior production engineer, UX auditor, growth PM, security reviewer, monetization strategist.

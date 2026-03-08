@@ -25,7 +25,7 @@ export async function createCheckoutSession(payload) {
     cancel_url: payload.cancelUrl,
     'line_items[0][price]': payload.priceId,
     'line_items[0][quantity]': 1,
-    'metadata[feature]': payload.feature,
+    'metadata[productKey]': payload.productKey,
     'metadata[userId]': payload.userId,
     'metadata[email]': payload.email || '',
     customer_email: payload.email || undefined,
@@ -45,16 +45,26 @@ export async function createCheckoutSession(payload) {
   return data;
 }
 
-export function verifyStripeWebhookSignature(rawBody, signatureHeader, secret) {
+export function verifyStripeWebhookSignature(rawBody, signatureHeader, secret, toleranceSeconds = 300) {
   if (!signatureHeader || !secret) return false;
 
   const pairs = signatureHeader.split(',').map((v) => v.split('='));
-  const sigMap = Object.fromEntries(pairs);
-  const timestamp = sigMap.t;
-  const expected = sigMap.v1;
-  if (!timestamp || !expected) return false;
+  const timestamp = pairs.find(([k]) => k === 't')?.[1];
+  const expectedSignatures = pairs.filter(([k]) => k === 'v1').map(([, v]) => v).filter(Boolean);
+  if (!timestamp || expectedSignatures.length === 0) return false;
+
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const ts = Number(timestamp);
+  if (!Number.isFinite(ts) || Math.abs(nowSeconds - ts) > toleranceSeconds) {
+    return false;
+  }
 
   const payload = `${timestamp}.${rawBody.toString()}`;
   const digest = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(digest));
+
+  try {
+    return expectedSignatures.some((expected) => crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(expected)));
+  } catch {
+    return false;
+  }
 }

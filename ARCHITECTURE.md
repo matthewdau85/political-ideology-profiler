@@ -1,16 +1,26 @@
 # ARCHITECTURE
 
+## Governance Metadata
+- Author: Principal Software Architect
+- Reviewer: Security Engineer
+- Approval status: Approved (Internal)
+- Version: v2.2
+- Last review date: 2026-03-07
+- Evidence links:
+  - `BILLING_ARCHITECTURE.md`
+  - `PRODUCTION_VALIDATION_REPORT.md`
+
 ## System Components
 - **SPA**: quiz, scoring, visualization, sharing, profile.
-- **API layer**: `collect`, `stats`, `contact`, `create-checkout-session`, `verify-entitlement`, `stripe-webhook`.
+- **API layer**: `collect`, `stats`, `contact`, `stripe/create-checkout-session`, `entitlements/verify`, `stripe/webhook`, `me/*`.
 - **Auth**: Supabase Auth (REST + JWT bearer).
 - **Payments**: Stripe Checkout + webhook updates.
-- **Storage**: Upstash Redis (stats, queue, entitlements, rate limiting).
+- **Storage**: Supabase (auth, profiles, quiz results, entitlements, payments) + Upstash Redis (rate limiting and selected caches).
 
 ## Request Flow
 1. User signs up/signs in via Supabase.
-2. Premium click calls `/api/create-checkout-session`.
+2. Premium click calls `/api/stripe/create-checkout-session`.
 3. Stripe redirects user to hosted checkout.
-4. Stripe webhook posts to `/api/stripe-webhook`.
-5. Entitlement written to Redis.
-6. Frontend calls `/api/verify-entitlement` before showing premium content.
+4. Stripe webhook posts to `/api/stripe/webhook`.
+5. Entitlement written to Supabase (`public.entitlements`) via webhook handling.
+6. Frontend calls `/api/entitlements/verify` before showing premium content.
