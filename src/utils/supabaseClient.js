@@ -1,9 +1,14 @@
-import { getEnv } from './env';
+import { getClientConfig } from './env';
 
-const supabaseUrl = getEnv('VITE_SUPABASE_URL');
-const supabaseAnonKey = getEnv('VITE_SUPABASE_ANON_KEY');
+const { supabaseUrl, supabaseAnonKey } = getClientConfig();
 
 export const hasSupabaseConfig = Boolean(supabaseUrl && supabaseAnonKey);
+
+function requireSupabaseConfig() {
+  if (!hasSupabaseConfig) {
+    throw new Error('Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY and rebuild.');
+  }
+}
 
 function authHeaders(token) {
   return {
@@ -13,29 +18,55 @@ function authHeaders(token) {
   };
 }
 
+async function parseResponse(res, fallbackMessage) {
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+
+  if (!res.ok) {
+    return {
+      error: data?.error_description || data?.error || data?.msg || fallbackMessage,
+      status: res.status,
+    };
+  }
+
+  return data;
+}
+
 export async function supabaseSignUp(email, password) {
+  requireSupabaseConfig();
   const res = await fetch(`${supabaseUrl}/auth/v1/signup`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({ email, password }),
   });
-  return res.json();
+  return parseResponse(res, 'Unable to create account');
 }
 
 export async function supabaseSignIn(email, password) {
+  requireSupabaseConfig();
   const res = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({ email, password }),
   });
-  return res.json();
+  return parseResponse(res, 'Unable to sign in');
 }
 
 export async function supabaseGetUser(accessToken) {
+  requireSupabaseConfig();
   const res = await fetch(`${supabaseUrl}/auth/v1/user`, {
     method: 'GET',
     headers: authHeaders(accessToken),
   });
   if (!res.ok) return null;
-  return res.json();
+
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 }

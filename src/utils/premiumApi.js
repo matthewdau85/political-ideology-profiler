@@ -1,8 +1,8 @@
 import { stripePublishableKey } from './env';
-import { getAccessTokenForApi } from './authStore';
+import { getAccessToken } from '../lib/supabaseClient';
 
 async function fetchJson(url, options = {}) {
-  const token = getAccessTokenForApi();
+  const token = await getAccessToken();
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),

@@ -8,11 +8,11 @@
 - Annual membership: $25/year
 
 ## Flow
-1. Frontend calls `/api/create-checkout-session`.
+1. Frontend calls `/api/stripe/create-checkout-session`.
 2. Checkout session is created with feature + user metadata.
 3. Stripe hosted checkout handles payment.
-4. `/api/stripe-webhook` grants/revokes entitlements.
-5. Frontend validates access via `/api/verify-entitlement`.
+4. `/api/stripe/webhook` grants/revokes entitlements.
+5. Frontend validates access via `/api/entitlements/verify`.
 
 ## Lifecycle Events Handled
 - `checkout.session.completed`

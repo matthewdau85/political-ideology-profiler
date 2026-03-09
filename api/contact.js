@@ -5,6 +5,8 @@
 import { Redis } from '@upstash/redis';
 import { applyCors } from './_lib/cors';
 import { checkRateLimit } from './_lib/rateLimit';
+import { requireCaptcha } from './_lib/botProtection';
+import { isValidEmail, rejectUnexpectedKeys } from './_lib/validation';
 
 const CONTACT_KEY = 'contact_messages';
 const MAX_MESSAGES = 500;
@@ -28,7 +30,7 @@ async function sendEmail({ name, email, subject, message }) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      from: 'Political Ideology Profiler <noreply@politicalideologyprofiler.com>',
+      from: 'Ideology Compass <noreply@ideologycompass.com>',
       to: RECIPIENT,
       reply_to: email,
       subject: `[Contact] ${subject || 'General Inquiry'} — from ${name || 'Anonymous'}`,
@@ -56,26 +58,36 @@ export default async function handler(req, res) {
 
   if (!(await checkRateLimit(req, res, 'contact', { limit: 10, window: '1 m' }))) return;
 
-  const { name, email, subject, message, website } = req.body || {};
+  const body = req.body || {};
+  if (rejectUnexpectedKeys(res, body, ['name', 'email', 'subject', 'message', 'website', 'captchaToken'])) return;
+
+  const { name, email, subject, message, website } = body;
+  const trimmedEmail = String(email || '').trim().toLowerCase();
+  const trimmedMessage = String(message || '').trim();
+
+  if (!(await requireCaptcha(req, res, { required: true }))) return;
 
   if (website) {
     return res.status(400).json({ error: 'Bot detected' });
   }
 
-  if (!email || !message) {
+  if (!trimmedEmail || !trimmedMessage) {
     return res.status(400).json({ error: 'Email and message are required' });
   }
 
-  // Basic validation
-  if (message.length > 5000) {
-    return res.status(400).json({ error: 'Message too long' });
+  if (!isValidEmail(trimmedEmail)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+
+  if (trimmedMessage.length < 10 || trimmedMessage.length > 5000) {
+    return res.status(400).json({ error: 'Message must be between 10 and 5000 characters' });
   }
 
   const entry = {
     name: (name || '').slice(0, 200),
-    email: email.slice(0, 200),
+    email: trimmedEmail.slice(0, 200),
     subject: (subject || 'General Inquiry').slice(0, 200),
-    message: message.slice(0, 5000),
+    message: trimmedMessage.slice(0, 5000),
     timestamp: new Date().toISOString(),
   };
 
