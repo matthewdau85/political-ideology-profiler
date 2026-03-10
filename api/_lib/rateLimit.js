@@ -1,19 +1,24 @@
-import { Redis } from '@upstash/redis';
+import { getRedis } from './redis';
 
 const memoryHits = new Map();
+const CLEANUP_INTERVAL = 5 * 60_000; // 5 minutes
+let lastCleanup = Date.now();
 
 function getIdentifier(req) {
   return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
 }
 
-function getRedis() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
+function cleanupExpiredEntries() {
+  const now = Date.now();
+  if (now - lastCleanup < CLEANUP_INTERVAL) return;
+  lastCleanup = now;
+  for (const [key, entry] of memoryHits) {
+    if (now > entry.resetAt) memoryHits.delete(key);
+  }
 }
 
 function inMemoryLimit(key, limit = 30, windowMs = 60_000) {
+  cleanupExpiredEntries();
   const now = Date.now();
   const entry = memoryHits.get(key) || { count: 0, resetAt: now + windowMs };
   if (now > entry.resetAt) {

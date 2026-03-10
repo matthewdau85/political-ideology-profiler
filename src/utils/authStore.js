@@ -158,6 +158,20 @@ export function deleteUserData() {
 }
 
 export async function deleteAccount() {
+  const accessToken = getAccessToken();
+  if (accessToken) {
+    try {
+      await fetch('/api/delete-account', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch {
+      // Continue with local cleanup even if server call fails
+    }
+  }
   deleteUserData();
   await logout();
 }

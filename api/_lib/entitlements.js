@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { getRedis } from './redis';
 
 const FEATURE_PRICE_MAP = {
   deep_analysis: process.env.STRIPE_PRICE_DEEP_ANALYSIS,
@@ -12,13 +12,6 @@ const PRICE_TO_FEATURE = Object.entries(FEATURE_PRICE_MAP).reduce((acc, [feature
   if (price) acc[price] = feature;
   return acc;
 }, {});
-
-function getRedis() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
-}
 
 function keyForUser(userId) {
   return `entitlements:${userId}`;

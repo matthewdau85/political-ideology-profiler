@@ -1,6 +1,10 @@
 import { applyCors } from './_lib/cors';
 import { grantEntitlement, revokeEntitlement } from './_lib/entitlements';
 import { verifyStripeWebhookSignature } from './_lib/stripe';
+import { getRedis } from './_lib/redis';
+
+const PROCESSED_EVENTS_PREFIX = 'stripe_event:';
+const EVENT_TTL_SECONDS = 60 * 60 * 24; // 24 hours
 
 export const config = {
   api: {
@@ -33,6 +37,17 @@ export default async function handler(req, res) {
   }
 
   const event = JSON.parse(rawBody.toString());
+
+  // Idempotency: skip already-processed events
+  const redis = getRedis();
+  if (redis) {
+    const eventKey = `${PROCESSED_EVENTS_PREFIX}${event.id}`;
+    const alreadyProcessed = await redis.get(eventKey);
+    if (alreadyProcessed) {
+      return res.status(200).json({ received: true, duplicate: true });
+    }
+    await redis.set(eventKey, '1', { ex: EVENT_TTL_SECONDS });
+  }
 
   try {
     switch (event.type) {

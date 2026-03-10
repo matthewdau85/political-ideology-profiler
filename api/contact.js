@@ -2,20 +2,13 @@
 // Sends email via Resend API if RESEND_API_KEY is set,
 // otherwise stores messages in Upstash Redis for later retrieval.
 
-import { Redis } from '@upstash/redis';
+import { requireRedis } from './_lib/redis';
 import { applyCors } from './_lib/cors';
 import { checkRateLimit } from './_lib/rateLimit';
 
 const CONTACT_KEY = 'contact_messages';
 const MAX_MESSAGES = 500;
 const RECIPIENT = 'matthew.donovan@alumni.griffithuni.edu.au';
-
-function getRedis() {
-  return new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN,
-  });
-}
 
 async function sendEmail({ name, email, subject, message }) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -65,6 +58,9 @@ export default async function handler(req, res) {
   if (!email || !message) {
     return res.status(400).json({ error: 'Email and message are required' });
   }
+  if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
 
   // Basic validation
   if (message.length > 5000) {
@@ -84,7 +80,7 @@ export default async function handler(req, res) {
     const emailSent = await sendEmail(entry);
 
     // Always store in Redis as backup
-    const redis = getRedis();
+    const redis = requireRedis();
     await redis.lpush(CONTACT_KEY, JSON.stringify(entry));
     await redis.ltrim(CONTACT_KEY, 0, MAX_MESSAGES - 1);
 
