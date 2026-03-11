@@ -56,5 +56,8 @@ export function verifyStripeWebhookSignature(rawBody, signatureHeader, secret) {
 
   const payload = `${timestamp}.${rawBody.toString()}`;
   const digest = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(digest));
+  const a = Buffer.from(expected);
+  const b = Buffer.from(digest);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
 }

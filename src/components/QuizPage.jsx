@@ -1,6 +1,15 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import questions, { sections } from '../data/questions';
+import { calculateResults, calculateRadarScores, findClosestFigures, deriveTopIssues } from '../utils/calcResults';
+import { classifyCluster } from '../data/clusters';
+import { classifyTypology } from '../utils/typology';
+import figures from '../data/figures';
+import { saveResult, savePermalink, updateDebate, getDebateById } from '../utils/resultsStore';
+import { saveUserResult, getSession } from '../utils/authStore';
+import { trackEvent, Events } from '../utils/analytics';
+import AdSlot from './AdSlot';
+import { submitAnonymousResult } from '../utils/dataCollect';
 
 // Fisher-Yates shuffle creating an index map for each question
 function buildShuffledOrders(qs) {
@@ -13,15 +22,6 @@ function buildShuffledOrders(qs) {
     return indices;
   });
 }
-import { calculateResults, calculateRadarScores, findClosestFigures, deriveTopIssues } from '../utils/calcResults';
-import { classifyCluster } from '../data/clusters';
-import { classifyTypology } from '../utils/typology';
-import figures from '../data/figures';
-import { saveResult, savePermalink, updateDebate, getDebateById } from '../utils/resultsStore';
-import { saveUserResult, getSession } from '../utils/authStore';
-import { trackEvent, Events } from '../utils/analytics';
-import AdSlot from './AdSlot';
-import { submitAnonymousResult } from '../utils/dataCollect';
 
 const IMPORTANCE_OPTIONS = ['Low', 'Medium', 'High'];
 const CONVICTION_OPTIONS = ['Lean', 'Agree', 'Strongly Agree'];

@@ -19,5 +19,5 @@ export default async function handler(req, res) {
   }
 
   const entitled = await hasEntitlement(user.id, feature);
-  return res.status(200).json({ entitled, feature, userId: user.id });
+  return res.status(200).json({ entitled, feature });
 }
