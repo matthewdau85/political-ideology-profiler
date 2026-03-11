@@ -78,21 +78,32 @@ export default async function handler(req, res) {
     const avgEconomic = stats.totalResponses > 0 ? Math.round((stats.totalEconomic / stats.totalResponses) * 10) / 10 : 0;
     const avgSocial = stats.totalResponses > 0 ? Math.round((stats.totalSocial / stats.totalResponses) * 10) / 10 : 0;
 
-    // Fetch per-country medians from separate lists
+    // Fetch per-country medians in a single pipeline (avoids N*2 sequential round-trips)
+    const countryEntries = Object.entries(stats.countries);
+    const qualifiedCountries = countryEntries.filter(([, data]) => data.count >= 100);
+
+    let medianResults = [];
+    if (qualifiedCountries.length > 0) {
+      const pipeline = redis.pipeline();
+      for (const [name] of qualifiedCountries) {
+        pipeline.lrange(`${COUNTRY_VALUES_KEY_PREFIX}:${name}:economic`, 0, -1);
+        pipeline.lrange(`${COUNTRY_VALUES_KEY_PREFIX}:${name}:social`, 0, -1);
+      }
+      medianResults = await pipeline.exec();
+    }
+
     const countryStats = {};
-    for (const [name, data] of Object.entries(stats.countries)) {
+    let medianIdx = 0;
+    for (const [name, data] of countryEntries) {
       const computed = {
         responses: data.count,
         avgEconomic: Math.round((data.totalEconomic / data.count) * 10) / 10,
         avgSocial: Math.round((data.totalSocial / data.count) * 10) / 10,
       };
 
-      // Only fetch value lists for countries above the suppression threshold
       if (data.count >= 100) {
-        const [econValues, socialValues] = await Promise.all([
-          redis.lrange(`${COUNTRY_VALUES_KEY_PREFIX}:${name}:economic`, 0, -1),
-          redis.lrange(`${COUNTRY_VALUES_KEY_PREFIX}:${name}:social`, 0, -1),
-        ]);
+        const econValues = medianResults[medianIdx++] || [];
+        const socialValues = medianResults[medianIdx++] || [];
         computed.medianEconomic = Math.round(median(econValues.map(Number)) * 10) / 10;
         computed.medianSocial = Math.round(median(socialValues.map(Number)) * 10) / 10;
       }

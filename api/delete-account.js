@@ -1,6 +1,7 @@
 import { applyCors } from './_lib/cors';
 import { checkRateLimit } from './_lib/rateLimit';
 import { getAuthenticatedUser } from './_lib/auth';
+import { getRedis } from './_lib/redis';
 
 export default async function handler(req, res) {
   if (!applyCors(req, res, ['POST'])) return;
@@ -31,6 +32,12 @@ export default async function handler(req, res) {
       const data = await response.json().catch(() => ({}));
       console.error('Supabase delete user failed:', data);
       return res.status(500).json({ error: 'Failed to delete account' });
+    }
+
+    // Clean up Redis entitlements for deleted user
+    const redis = getRedis();
+    if (redis) {
+      await redis.del(`entitlements:${user.id}`);
     }
 
     return res.status(200).json({ ok: true });

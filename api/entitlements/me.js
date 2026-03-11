@@ -12,5 +12,5 @@ export default async function handler(req, res) {
   if (!user) return res.status(401).json({ error: 'Authentication required' });
 
   const entitlements = await listEntitlements(user.id);
-  return res.status(200).json({ userId: user.id, entitlements });
+  return res.status(200).json({ entitlements });
 }

@@ -38,15 +38,14 @@ export default async function handler(req, res) {
 
   const event = JSON.parse(rawBody.toString());
 
-  // Idempotency: skip already-processed events
+  // Idempotency: atomic SET NX to avoid TOCTOU race on concurrent webhook deliveries
   const redis = getRedis();
   if (redis) {
     const eventKey = `${PROCESSED_EVENTS_PREFIX}${event.id}`;
-    const alreadyProcessed = await redis.get(eventKey);
-    if (alreadyProcessed) {
+    const wasSet = await redis.set(eventKey, '1', { ex: EVENT_TTL_SECONDS, nx: true });
+    if (!wasSet) {
       return res.status(200).json({ received: true, duplicate: true });
     }
-    await redis.set(eventKey, '1', { ex: EVENT_TTL_SECONDS });
   }
 
   try {

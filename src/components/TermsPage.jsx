@@ -6,13 +6,13 @@ export default function TermsPage() {
     <div className="container" style={{ padding: 'var(--spacing-3xl) 0', maxWidth: 720 }}>
       <h1 style={{ fontSize: 36, marginBottom: 'var(--spacing-lg)' }}>Terms of Service</h1>
       <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-xl)', lineHeight: 1.8 }}>
-        Last updated: March 2026. By using the Political Ideology Profiler, you agree to these terms.
+        Last updated: March 2026. By using the Ideology Compass, you agree to these terms.
       </p>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>1. What This Tool Is</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          The Political Ideology Profiler is a free, educational quiz that estimates your political
+          The Ideology Compass is a free, educational quiz that estimates your political
           leanings based on your answers to 24 questions. It is not a scientific diagnosis, professional
           assessment, or official political classification. Results are approximate and should be
           treated as a starting point for reflection, not a definitive label.
@@ -66,7 +66,7 @@ export default function TermsPage() {
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>6. Intellectual Property</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
           The quiz questions, scoring algorithms, design, and original content of this site are
-          the property of the Political Ideology Profiler. Historical figure descriptions and
+          the property of the Ideology Compass. Historical figure descriptions and
           placements are based on publicly available information and scholarly interpretation.
           You may share your personal results freely.
         </p>
@@ -85,7 +85,7 @@ export default function TermsPage() {
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>8. Limitation of Liability</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
-          To the maximum extent permitted by law, the Political Ideology Profiler and its
+          To the maximum extent permitted by law, the Ideology Compass and its
           operators shall not be liable for any indirect, incidental, or consequential damages
           arising from your use of the site or reliance on quiz results.
         </p>

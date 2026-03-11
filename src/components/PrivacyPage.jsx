@@ -25,7 +25,7 @@ export default function PrivacyPage() {
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
         <h2 style={{ fontSize: 22, marginBottom: 'var(--spacing-md)' }}>What We Collect</h2>
         <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.8, marginBottom: 'var(--spacing-md)' }}>
-          The Political Ideology Profiler collects only the minimum data necessary to function.
+          The Ideology Compass collects only the minimum data necessary to function.
           Your full quiz results are stored locally in your browser. If you accept cookies,
           we also send a small amount of <strong>anonymized</strong> data to our server to
           build aggregate statistics (see "Data We Send to Our Server" below).

@@ -1,6 +1,6 @@
 {
-  "name": "Political Ideology Profiler",
-  "short_name": "Ideology Quiz",
+  "name": "Ideology Compass",
+  "short_name": "Ideology Compass",
   "description": "Discover your political ideology through a research-grade 24-question quiz.",
   "start_url": "/",
   "display": "standalone",
