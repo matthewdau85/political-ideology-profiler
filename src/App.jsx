@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { getSession, hydrateSession } from './utils/authStore';
 import CookieConsent from './components/CookieConsent';
+import ErrorBoundary from './components/ErrorBoundary';
 import { Analytics } from '@vercel/analytics/react';
 
 // Eagerly load core pages
@@ -65,6 +66,7 @@ export default function App() {
       </nav>
 
       <main>
+        <ErrorBoundary>
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -100,6 +102,7 @@ export default function App() {
             } />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
       </main>
 
       <footer className="app-footer">

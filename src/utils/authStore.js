@@ -1,7 +1,8 @@
-import { hasSupabaseConfig, supabaseSignIn, supabaseSignUp, supabaseGetUser } from './supabaseClient';
+import { hasSupabaseConfig, supabaseSignIn, supabaseSignUp, supabaseGetUser, supabaseRefreshToken } from './supabaseClient';
 
 const SESSION_CACHE_KEY = 'ideology_supabase_session_cache';
 const ACCESS_TOKEN_KEY = 'ideology_supabase_access_token';
+const REFRESH_TOKEN_KEY = 'ideology_supabase_refresh_token';
 const USER_RESULTS_PREFIX = 'ideology_user_results';
 
 function getCachedSession() {
@@ -19,6 +20,15 @@ function getAccessToken() {
 function setAccessToken(token) {
   if (token) localStorage.setItem(ACCESS_TOKEN_KEY, token);
   else localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
+function getRefreshToken() {
+  return localStorage.getItem(REFRESH_TOKEN_KEY);
+}
+
+function setRefreshToken(token) {
+  if (token) localStorage.setItem(REFRESH_TOKEN_KEY, token);
+  else localStorage.removeItem(REFRESH_TOKEN_KEY);
 }
 
 function cacheSession(user) {
@@ -78,12 +88,29 @@ export async function hydrateSession() {
   if (!hasSupabaseConfig) return getCachedSession();
   const accessToken = getAccessToken();
   if (!accessToken) return null;
-  const user = await supabaseGetUser(accessToken);
+
+  let user = await supabaseGetUser(accessToken);
+
+  // If access token expired, try refreshing
+  if (!user) {
+    const refreshToken = getRefreshToken();
+    if (refreshToken) {
+      const refreshed = await supabaseRefreshToken(refreshToken);
+      if (refreshed.access_token) {
+        setAccessToken(refreshed.access_token);
+        if (refreshed.refresh_token) setRefreshToken(refreshed.refresh_token);
+        user = refreshed.user || await supabaseGetUser(refreshed.access_token);
+      }
+    }
+  }
+
   if (!user) {
     setAccessToken(null);
+    setRefreshToken(null);
     cacheSession(null);
     return null;
   }
+
   cacheSession(user);
   return toSessionUser(user);
 }
@@ -97,6 +124,7 @@ export async function createAccount(email, password) {
   if (data.error) return { error: data.error_description || data.msg || 'Unable to create account' };
 
   if (data.access_token) setAccessToken(data.access_token);
+  if (data.refresh_token) setRefreshToken(data.refresh_token);
   cacheSession(data.user || null);
   return { user: toSessionUser(data.user), needsEmailVerification: !data.access_token };
 }
@@ -110,6 +138,7 @@ export async function login(email, password) {
   if (data.error) return { error: data.error_description || data.msg || 'Invalid email or password' };
 
   setAccessToken(data.access_token);
+  if (data.refresh_token) setRefreshToken(data.refresh_token);
   const user = data.user || await supabaseGetUser(data.access_token);
   cacheSession(user || null);
   return { user: toSessionUser(user) };
@@ -117,6 +146,7 @@ export async function login(email, password) {
 
 export async function logout() {
   setAccessToken(null);
+  setRefreshToken(null);
   cacheSession(null);
 }
 
@@ -133,16 +163,58 @@ export function saveUserResult(result) {
     economic: result.economic,
     social: result.social,
     cluster: result.cluster,
+    typology: result.typology,
     timestamp: new Date().toISOString(),
     topIssues: result.topIssues || [],
     radarScores: result.radarScores || [],
     closestFigures: result.closestFigures || [],
   };
 
+  // Save locally
   const results = getResultsForUser(session.id);
   results.push(entry);
   setResultsForUser(session.id, results);
+
+  // Persist server-side (fire-and-forget)
+  const token = getAccessToken();
+  if (token) {
+    fetch('/api/results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ result: entry }),
+    }).catch(() => {});
+  }
+
   return entry;
+}
+
+export async function loadServerResults() {
+  const session = getCachedSession();
+  const token = getAccessToken();
+  if (!session?.id || !token) return [];
+
+  try {
+    const res = await fetch('/api/results', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const { results } = await res.json();
+    if (Array.isArray(results) && results.length > 0) {
+      // Merge server results with local, deduplicating by id
+      const local = getResultsForUser(session.id);
+      const ids = new Set(local.map(r => r.id));
+      const merged = [...local];
+      for (const r of results) {
+        if (!ids.has(r.id)) merged.push(r);
+      }
+      merged.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      setResultsForUser(session.id, merged);
+      return merged;
+    }
+    return [];
+  } catch {
+    return [];
+  }
 }
 
 export function getUserResults() {

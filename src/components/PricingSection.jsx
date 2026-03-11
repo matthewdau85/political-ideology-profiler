@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { trackEvent, Events } from '../utils/analytics';
 
 const plans = [
-  { id: 'deep_analysis', name: 'Deep Analysis', price: 5, link: '/deep-analysis', features: ['7-dimension radar analysis', 'Detailed type breakdown', 'Policy position mapping'] },
-  { id: 'report', name: 'Personality Report', price: 12, link: '/deep-analysis', features: ['Downloadable PDF report', 'Full ideological profile', 'Historical comparisons', 'Reading recommendations'] },
+  { id: 'deep_analysis', name: 'Deep Analysis', price: 5, link: '/deep-analysis', features: ['7-dimension radar analysis', 'Detailed type breakdown', 'Ideological summary narrative'] },
+  { id: 'report', name: 'Personality Report', price: 12, link: '/deep-analysis', features: ['Downloadable PDF report', 'Full ideological profile', 'Historical figure comparisons'] },
   { id: 'country_comparison', name: 'Country Comparison', price: 5, link: '/country-comparison', features: ['5 country party comparisons', 'Closest party alignment', 'Distance scoring'] },
   { id: 'friend_comparison', name: 'Friend Comparison', price: 3, link: '/debate/new', features: ['Generate debate link', 'Side-by-side comparison', 'Overlap percentage'] },
-  { id: 'premium_membership', name: 'Premium Membership', price: 25, yearly: true, featured: true, link: '/deep-analysis', features: ['All premium features', 'Ideology evolution tracking', 'Unlimited debate links', 'Priority support'] },
+  { id: 'premium_membership', name: 'Premium Membership', price: 25, yearly: true, featured: true, link: '/deep-analysis', features: ['All premium features', 'Ideology evolution tracking', 'Unlimited debate links', 'Server-side result backup'] },
 ];
 
 export default function PricingSection() {

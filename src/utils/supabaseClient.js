@@ -70,3 +70,13 @@ export async function supabaseGetUser(accessToken) {
     return null;
   }
 }
+
+export async function supabaseRefreshToken(refreshToken) {
+  requireSupabaseConfig();
+  const res = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=refresh_token`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ refresh_token: refreshToken }),
+  });
+  return parseResponse(res, 'Unable to refresh session');
+}
