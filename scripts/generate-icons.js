@@ -28,9 +28,9 @@ function createPlaceholderSVG(size) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <rect width="${size}" height="${size}" fill="#0a0a0a"/>
   <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central"
-        fill="#ffffff" font-family="serif" font-size="${size * 0.35}" font-weight="bold">PIP</text>
+        fill="#ffffff" font-family="serif" font-size="${size * 0.35}" font-weight="bold">IC</text>
   <text x="50%" y="72%" text-anchor="middle" dominant-baseline="central"
-        fill="#888888" font-family="sans-serif" font-size="${size * 0.08}">Political Ideology</text>
+        fill="#888888" font-family="sans-serif" font-size="${size * 0.08}">Ideology Compass</text>
 </svg>`;
 }
 
