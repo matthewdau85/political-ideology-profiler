@@ -9,7 +9,7 @@ export default function LandingPage() {
     <div className="landing">
       <header className="landing-header">
         <div className="container">
-          <p className="landing-label mono">Political Quiz &amp; Analysis Tool</p>
+          <p className="landing-label mono">Ideological Analysis Tool</p>
           <h1 className="landing-title">Ideology Compass</h1>
           <p className="landing-subtitle">
             Find out where you stand politically. Compare your views with

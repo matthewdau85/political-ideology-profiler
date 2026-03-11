@@ -1,7 +1,7 @@
 {
   "name": "Ideology Compass",
   "short_name": "Ideology Compass",
-  "description": "Discover your political ideology through a research-grade 24-question quiz.",
+  "description": "Discover where you stand with Ideology Compass — a research-grade 24-question quiz.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",

@@ -110,7 +110,7 @@ export default function App() {
           <div className="footer-content">
             <div className="footer-left">
               <span className="mono footer-label">Ideology Compass</span>
-              <span className="footer-copy">A political quiz and analysis tool</span>
+              <span className="footer-copy">An ideological analysis tool</span>
             </div>
             <div className="footer-links">
               <Link to="/about">About</Link>
