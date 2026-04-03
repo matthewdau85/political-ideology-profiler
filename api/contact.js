@@ -1,4 +1,4 @@
-// Vercel Serverless Function — handles contact form submissions
+﻿// Vercel Serverless Function — handles contact form submissions
 // Sends email via Resend API if RESEND_API_KEY is set,
 // otherwise stores messages in Upstash Redis for later retrieval.
 
@@ -21,7 +21,7 @@ async function sendEmail({ name, email, subject, message }) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      from: 'Political Ideology Profiler <noreply@politicalideologyprofiler.com>',
+      from: 'Ideology Compass <noreply@ideologycompass.com>',
       to: RECIPIENT,
       reply_to: email,
       subject: `[Contact] ${subject || 'General Inquiry'} — from ${name || 'Anonymous'}`,

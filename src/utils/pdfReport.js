@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+﻿import jsPDF from 'jspdf';
 
 const COLORS = {
   primary: [30, 58, 95],
@@ -258,7 +258,7 @@ export function generatePDFReport(result) {
     doc.setPage(i);
     doc.setTextColor(...COLORS.textSecondary);
     doc.setFontSize(7);
-    doc.text('Political Ideology Profiler — politicalideologyprofiler.com', 20, 288);
+    doc.text('Ideology Compass — ideologycompass.com', 20, 288);
     doc.text(`Page ${i} of ${pageCount}`, 190, 288, { align: 'right' });
   }
 

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+﻿import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { getSession, hydrateSession } from './utils/authStore';
 import CookieConsent from './components/CookieConsent';
@@ -50,7 +50,7 @@ export default function App() {
       <nav className="app-nav">
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link to="/" className="nav-logo">
-            <span className="nav-logo-text">Political Ideology Profiler</span>
+            <span className="nav-logo-text">Ideology Compass</span>
           </Link>
           <div className="nav-links">
             <Link to="/quiz" className={`nav-link ${location.pathname === '/quiz' ? 'active' : ''}`}>Quiz</Link>
@@ -106,7 +106,7 @@ export default function App() {
         <div className="container">
           <div className="footer-content">
             <div className="footer-left">
-              <span className="mono footer-label">Political Ideology Profiler</span>
+              <span className="mono footer-label">Ideology Compass</span>
               <span className="footer-copy">A political quiz and analysis tool</span>
             </div>
             <div className="footer-links">

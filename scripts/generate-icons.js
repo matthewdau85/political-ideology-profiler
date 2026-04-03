@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Placeholder icon generator for app stores.
  *
  * Replace the generated placeholder icons with real artwork before
@@ -6,7 +6,7 @@
  *
  *   PWA:      192x192, 512x512
  *   iOS:      1024x1024 (App Store), 180x180 (home screen)
- *   Android:  48, 72, 96, 144, 192, 512 (mdpi → xxxhdpi)
+ *   Android:  48, 72, 96, 144, 192, 512 (mdpi â†’ xxxhdpi)
  *
  * For production, use a tool like https://icon.kitchen or
  * https://www.appicon.co to generate all sizes from a single 1024x1024 PNG.
@@ -28,9 +28,9 @@ function createPlaceholderSVG(size) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <rect width="${size}" height="${size}" fill="#0a0a0a"/>
   <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central"
-        fill="#ffffff" font-family="serif" font-size="${size * 0.35}" font-weight="bold">PIP</text>
+        fill="#ffffff" font-family="serif" font-size="${size * 0.35}" font-weight="bold">IC</text>
   <text x="50%" y="72%" text-anchor="middle" dominant-baseline="central"
-        fill="#888888" font-family="sans-serif" font-size="${size * 0.08}">Political Ideology</text>
+        fill="#888888" font-family="sans-serif" font-size="${size * 0.08}">Ideology Compass</text>
 </svg>`;
 }
 
@@ -49,7 +49,7 @@ for (const size of sizes) {
 for (const size of [192, 512]) {
   const svg = createPlaceholderSVG(size);
   writeFileSync(join(iconsDir, `icon-${size}.png`), svg);
-  console.log(`Created icon-${size}.png (SVG placeholder — replace with real PNG for production)`);
+  console.log(`Created icon-${size}.png (SVG placeholder â€” replace with real PNG for production)`);
 }
 
 console.log('\nDone! Replace placeholder icons with real artwork before submitting to app stores.');

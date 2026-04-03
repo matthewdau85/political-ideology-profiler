@@ -1,6 +1,6 @@
-# Political Ideology Profiler
+﻿# Ideology Compass
 
-Political Ideology Profiler is a production-intended React + Vercel application for measuring political positioning on economic/social axes, generating shareable outputs, and monetizing premium analysis.
+Ideology Compass is a production-intended React + Vercel application for measuring political positioning on economic/social axes, generating shareable outputs, and monetizing premium analysis.
 
 ## Stack
 - Frontend: React 18 + Vite

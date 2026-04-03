@@ -1,6 +1,6 @@
-{
-  "appId": "com.politicalideologyprofiler.app",
-  "appName": "Political Ideology Profiler",
+﻿{
+  "appId": "com.ideologycompass.app",
+  "appName": "Ideology Compass",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

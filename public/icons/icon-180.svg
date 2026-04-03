@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
   <rect width="180" height="180" fill="#0a0a0a"/>
   <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central"
-        fill="#ffffff" font-family="serif" font-size="62.99999999999999" font-weight="bold">PIP</text>
+        fill="#ffffff" font-family="serif" font-size="62.99999999999999" font-weight="bold">IC</text>
   <text x="50%" y="72%" text-anchor="middle" dominant-baseline="central"
-        fill="#888888" font-family="sans-serif" font-size="14.4">Political Ideology</text>
+        fill="#888888" font-family="sans-serif" font-size="14.4">Ideology Compass</text>
 </svg>
