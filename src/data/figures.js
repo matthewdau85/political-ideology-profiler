@@ -13,7 +13,7 @@ const figures = [
     economic: -9,
     social: -6,
     description: 'Polish-German Marxist revolutionary who championed democratic socialism, mass strikes, and international workers\' solidarity against both capitalism and authoritarian socialism.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Rosa_Luxemburg.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Rosa_Luxemburg_Portrait_%283x4_cropped%29.jpg',
   },
   {
     id: 'allende',
@@ -21,7 +21,7 @@ const figures = [
     economic: -8,
     social: -5,
     description: 'Chilean president who pursued democratic socialism through nationalization and wealth redistribution before being overthrown in a 1973 military coup.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/5/52/Salvador_Allende_Gossens.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Salvador_Allende.jpg',
   },
   {
     id: 'mandela',
