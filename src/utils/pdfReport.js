@@ -1,4 +1,4 @@
-﻿import jsPDF from 'jspdf';
+import jsPDF from 'jspdf';
 
 const COLORS = {
   primary: [30, 58, 95],
@@ -18,7 +18,7 @@ function drawHeader(doc, result) {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
-  doc.text('Political Ideology Report', 20, 22);
+  doc.text('Ideology Compass Report', 20, 22);
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');

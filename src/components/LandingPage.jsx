@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { getStats } from '../utils/resultsStore';
 
@@ -128,6 +128,16 @@ export default function LandingPage() {
           .landing-subtitle { font-size: 16px; }
         }
       `}</style>
-    </div>
+
+      <footer style={{ textAlign: 'center', padding: '2rem 1rem', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '2rem', color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+        <div style={{ marginBottom: '0.75rem' }}>
+          <a href="/about" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none', margin: '0 0.75rem' }}>About</a>
+          <a href="/methodology" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none', margin: '0 0.75rem' }}>Methodology</a>
+          <a href="/privacy" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none', margin: '0 0.75rem' }}>Privacy</a>
+          <a href="/terms" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none', margin: '0 0.75rem' }}>Terms</a>
+          <a href="/contact" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none', margin: '0 0.75rem' }}>Contact</a>
+        </div>
+        <div>© {new Date().getFullYear()} Ideology Compass · <a href="https://ideologycompass.com" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>ideologycompass.com</a></div>
+      </footer>    </div>
   );
 }

@@ -1,12 +1,12 @@
-﻿// Advertisement configuration
+// Advertisement configuration
 // Supports Google AdSense, Carbon Ads, and custom sponsor banners
 
 const adConfig = {
   enabled: true,
-  provider: 'custom', // 'adsense' | 'carbon' | 'custom'
+  provider: 'adsense', // 'adsense' | 'carbon' | 'custom'
 
   adsense: {
-    clientId: '', // ca-pub-XXXXX
+    clientId: 'ca-pub-2818167207301077', // ca-pub-XXXXX
     slots: {
       quiz_midpoint: '',
       results_footer: '',
