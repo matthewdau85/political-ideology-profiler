@@ -1,7 +1,7 @@
-import { applyCors } from './_lib/cors';
-import { checkRateLimit } from './_lib/rateLimit';
-import { getAuthenticatedUser } from './_lib/auth';
-import { hasEntitlement, validFeatures } from './_lib/entitlements';
+import { applyCors } from './_lib/cors.js';
+import { checkRateLimit } from './_lib/rateLimit.js';
+import { getAuthenticatedUser } from './_lib/auth.js';
+import { hasEntitlement, validFeatures } from './_lib/entitlements.js';
 
 export default async function handler(req, res) {
   if (!applyCors(req, res, ['GET'])) return;

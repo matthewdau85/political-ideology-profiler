@@ -1,6 +1,6 @@
-import { applyCors } from './_lib/cors';
-import { checkRateLimit } from './_lib/rateLimit';
-import { getAuthenticatedUser } from './_lib/auth';
+import { applyCors } from './_lib/cors.js';
+import { checkRateLimit } from './_lib/rateLimit.js';
+import { getAuthenticatedUser } from './_lib/auth.js';
 
 export default async function handler(req, res) {
   if (!applyCors(req, res, ['POST'])) return;

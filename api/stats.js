@@ -1,6 +1,6 @@
-import { requireRedis } from './_lib/redis';
-import { applyCors } from './_lib/cors';
-import { checkRateLimit } from './_lib/rateLimit';
+import { requireRedis } from './_lib/redis.js';
+import { applyCors } from './_lib/cors.js';
+import { checkRateLimit } from './_lib/rateLimit.js';
 
 const STATS_KEY = 'ideology_stats';
 const COUNTRY_VALUES_KEY_PREFIX = 'ideology_country_values';

@@ -1,7 +1,7 @@
-import { applyCors } from './_lib/cors';
-import { grantEntitlement, revokeEntitlement } from './_lib/entitlements';
-import { verifyStripeWebhookSignature } from './_lib/stripe';
-import { getRedis } from './_lib/redis';
+import { applyCors } from './_lib/cors.js';
+import { grantEntitlement, revokeEntitlement } from './_lib/entitlements.js';
+import { verifyStripeWebhookSignature } from './_lib/stripe.js';
+import { getRedis } from './_lib/redis.js';
 
 const PROCESSED_EVENTS_PREFIX = 'stripe_event:';
 const EVENT_TTL_SECONDS = 60 * 60 * 24; // 24 hours

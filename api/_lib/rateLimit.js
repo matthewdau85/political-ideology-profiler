@@ -1,4 +1,4 @@
-import { getRedis } from './redis';
+import { getRedis } from './redis.js';
 
 const memoryHits = new Map();
 const CLEANUP_INTERVAL = 5 * 60_000; // 5 minutes

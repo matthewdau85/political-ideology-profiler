@@ -1,4 +1,4 @@
-import { getRedis } from './redis';
+import { getRedis } from './redis.js';
 
 const FEATURE_PRICE_MAP = {
   deep_analysis: process.env.STRIPE_PRICE_DEEP_ANALYSIS,
