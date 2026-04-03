@@ -5,7 +5,7 @@ import { trackEvent, Events } from '../utils/analytics';
 import EvolutionChart from '../charts/EvolutionChart';
 
 export default function ProfilePage() {
-  const [session, setSession] = useState(getSession);
+  const [session, setSession] = useState(getSession());
   const [mode, setMode] = useState('login'); // login | signup
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

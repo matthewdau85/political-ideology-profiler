@@ -44,7 +44,7 @@ export default function PricingSection() {
               {plan.yearly && <span style={{ fontSize: 14, fontWeight: 400 }}>/year</span>}
             </div>
             <ul style={{ listStyle: 'none', fontSize: 13, color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-lg)', lineHeight: 2 }}>
-              {plan.features.map((f, i) => <li key={i}>{f}</li>)}
+              {plan.features.map((f) => <li key={f}>{f}</li>)}
             </ul>
             <Link
               to={plan.link}

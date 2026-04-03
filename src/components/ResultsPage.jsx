@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getPermalink, getStats, getAllResults } from '../utils/resultsStore';
 import figures from '../data/figures';
@@ -16,14 +16,24 @@ export default function ResultsPage() {
   const result = useMemo(() => getPermalink(id), [id]);
   const stats = useMemo(() => getStats(), []);
   const allResults = useMemo(() => getAllResults(), []);
+  const [serverStats, setServerStats] = useState(null);
 
   useEffect(() => {
     if (result) trackEvent(Events.REPORT_VIEWED, { id: result.id, cluster: result.cluster, typology: result.typology });
   }, [result]);
 
-  if (!result) {
-    const comparativeInsights = generateComparativeInsights(result, allResults);
+  // Fetch global aggregate stats so comparativeInsights compares against the
+  // real dataset rather than just localStorage history on this device.
+  useEffect(() => {
+    fetch('/api/stats')
+      .then((r) => r.ok ? r.json() : null)
+      .then((payload) => {
+        if (payload?.data) setServerStats(payload.data);
+      })
+      .catch(() => { /* silently fall back to local comparison */ });
+  }, []);
 
+  if (!result) {
   return (
       <div className="container" style={{ padding: 'var(--spacing-3xl) 0', textAlign: 'center' }}>
         <h2>Result not found</h2>
@@ -40,7 +50,7 @@ export default function ResultsPage() {
     return full ? { ...full, ...cf } : cf;
   });
 
-  const comparativeInsights = generateComparativeInsights(result, allResults);
+  const comparativeInsights = generateComparativeInsights(result, allResults, serverStats);
 
   return (
     <div className="results-page container">
@@ -142,8 +152,6 @@ export default function ResultsPage() {
                 { name: 'Movement Orientation', desc: 'Inclination toward grassroots activism and systemic change over incremental reform.' },
               ].map(d => {
                 const score = result.radarScores.find(r => r.dimension === d.name);
-                const comparativeInsights = generateComparativeInsights(result, allResults);
-
   return (
                   <div key={d.name} className="radar-legend-item">
                     <div className="radar-legend-header">
