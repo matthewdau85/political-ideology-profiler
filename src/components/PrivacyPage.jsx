@@ -18,8 +18,15 @@ export default function PrivacyPage() {
   return (
     <div className="container" style={{ padding: 'var(--spacing-3xl) 0', maxWidth: 720 }}>
       <h1 style={{ fontSize: 36, marginBottom: 'var(--spacing-lg)' }}>Privacy &amp; Data Policy</h1>
+      <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-xs)', lineHeight: 1.8 }}>
+        <strong>App:</strong> Ideology Compass<br />
+        <strong>Operator:</strong> Matthew Donovan, Queensland, Australia<br />
+        <strong>Contact:</strong> matthew4surfers@gmail.com<br />
+        <strong>Last updated:</strong> 4 April 2026<br />
+        <strong>Governing Law:</strong> Australian Privacy Act 1988 (Privacy Act)
+      </p>
       <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-xl)', lineHeight: 1.8 }}>
-        Last updated: March 2026. This policy explains what data we collect, how we use it, and your rights.
+        This policy explains what data we collect, how we use it, and your rights.
       </p>
 
       <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>

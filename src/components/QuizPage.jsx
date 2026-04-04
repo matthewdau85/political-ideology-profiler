@@ -53,6 +53,10 @@ export default function QuizPage() {
   const [country, setCountry] = useState('');
   const [showCountry, setShowCountry] = useState(true);
   const [ageBand, setAgeBand] = useState('');
+  const [consentGiven, setConsentGiven] = useState(() => {
+    // Check if user has already seen and accepted the consent disclosure
+    return typeof localStorage !== 'undefined' && localStorage.getItem('ideology_compass_consent') === 'true';
+  });
   const navigate = useNavigate();
 
   // Shuffle answer order once per quiz session
@@ -178,6 +182,40 @@ export default function QuizPage() {
     setImportance('Medium');
     setConviction('Agree');
   }, [selectedAnswer, importance, conviction, currentQ, answers, question, currentOrder, finishQuiz]);
+
+  if (!consentGiven) {
+    return (
+      <div className="quiz-page container">
+        <div className="card quiz-consent" style={{ maxWidth: 600, margin: '40px auto' }}>
+          <h2>Before you begin</h2>
+          <div style={{ backgroundColor: '#fff8e1', border: '1px solid #ffb74d', borderRadius: 8, padding: 16, marginBottom: 24 }}>
+            <p style={{ margin: 0, fontSize: 14, color: '#856404' }}>
+              <strong>Important Privacy Notice:</strong> Your quiz responses may constitute political opinions, which is a category of sensitive personal information under the Australian Privacy Act 1988. By proceeding, you consent to Ideology Compass collecting and processing your responses to generate your political profile. Your data is stored securely and you may request deletion at any time. See our Privacy Policy for full details.
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: 12, flexDirection: 'column' }}>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                localStorage.setItem('ideology_compass_consent', 'true');
+                setConsentGiven(true);
+              }}
+            >
+              I Agree & Continue
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => navigate('/privacy')}
+              style={{ marginTop: 8 }}
+            >
+              View Privacy Policy
+            </button>
+          </div>
+        </div>
+        <style>{quizStyles}</style>
+      </div>
+    );
+  }
 
   if (showCountry) {
     return (
