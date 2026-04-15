@@ -9,14 +9,19 @@ export default function AdSlot({ placement = 'results_footer' }) {
   useEffect(() => {
     if (!isAdEnabled(placement)) return;
 
-    if (adInfo.provider === 'adsense' && adInfo.config?.clientId) {
-      // Google AdSense integration
+    // Only render a manual ad unit when a valid slot ID is configured.
+    // If the slot is empty, the auto-ads script in index.html handles placement
+    // automatically — pushing an empty slot causes console errors and policy issues.
+    const slotId = adInfo.config?.slots?.[placement];
+
+    if (adInfo.provider === 'adsense' && adInfo.config?.clientId && slotId) {
+      // Google AdSense manual ad unit
       try {
         const ins = document.createElement('ins');
         ins.className = 'adsbygoogle';
         ins.style.display = 'block';
         ins.setAttribute('data-ad-client', adInfo.config.clientId);
-        ins.setAttribute('data-ad-slot', adInfo.config.slots?.[placement] || '');
+        ins.setAttribute('data-ad-slot', slotId);
         ins.setAttribute('data-ad-format', 'auto');
         ins.setAttribute('data-full-width-responsive', 'true');
         if (containerRef.current) {
@@ -47,6 +52,10 @@ export default function AdSlot({ placement = 'results_footer' }) {
   }, [placement, adInfo.provider]);
 
   if (!isAdEnabled(placement)) return null;
+
+  // If AdSense is active but no slot ID is configured, return null —
+  // rely on Auto Ads (the script tag in index.html) for ad placement.
+  if (adInfo.provider === 'adsense' && !adInfo.config?.slots?.[placement]) return null;
 
   // Custom sponsor banner
   if (adInfo.provider === 'custom') {
