@@ -3,6 +3,90 @@
 Date: 2026-03-07
 Assessor roles: senior production engineer, UX auditor, growth PM, security reviewer, monetization strategist.
 
+## Deployment Persona Feedback (Current Production Incident)
+
+Observed production symptom: users are seeing a hard-stop "Configuration error" page caused by missing `VITE_SUPABASE_URL` and/or `VITE_SUPABASE_ANON_KEY` at build time.
+
+### Persona 1: First-time visitor
+- **Experience:** App does not load into quiz; sees an operator-style error page.
+- **Likely reaction:** Assumes site is broken/unmaintained and exits immediately.
+- **Business impact:** Immediate conversion loss (quiz starts, shares, newsletter capture, paid intent all effectively zero for affected deployments).
+- **Priority fixes:** Ensure Production + Preview env parity, run a pre-deploy env check, and block promotion when required `VITE_` vars are missing.
+
+### Persona 2: Returning user (saved local progress)
+- **Experience:** Cannot access profile/results despite prior engagement.
+- **Likely reaction:** Trust drops because previous investment appears lost (even if data still exists in browser).
+- **Business impact:** Elevated churn and reduced referral likelihood from your most valuable users.
+- **Priority fixes:** Add a softer fallback page with clear ETA/status link and preserve confidence messaging about local data retention.
+
+### Persona 3: Growth/marketing operator
+- **Experience:** Paid campaigns or social traffic hit a non-functional experience.
+- **Likely reaction:** Stops campaigns, questions release governance.
+- **Business impact:** Wasted acquisition spend, noisy performance data, and broken funnel attribution windows.
+- **Priority fixes:** Add deployment smoke test (`/` renders quiz CTA), alerting on config-error impressions, and release checklist gate tied to environment validation.
+
+### Persona 4: Security/privacy-conscious user
+- **Experience:** Sees explicit config fault in production and may infer weak operational hygiene.
+- **Likely reaction:** Hesitates to provide answers or create account.
+- **Business impact:** Lower sign-up completion and reduced trust in data handling claims.
+- **Priority fixes:** Publish transparent status/runbook page and include reliability controls in public trust messaging.
+
+### Persona 5: Internal engineer/on-call
+- **Experience:** Incident is diagnosable, but recovery depends on manual Vercel env updates + rebuild.
+- **Likely reaction:** Firefighting and deployment uncertainty if environment scoping is inconsistent.
+- **Business impact:** Longer MTTR and repeat incidents across Preview/Production.
+- **Priority fixes:** Codify env schema checks in CI, enforce one source of truth for required vars, and add post-deploy verification that config-error page is absent.
+
+### Remediations implemented in this repo revision
+- Added a required client-env build guard script: `scripts/verify-required-client-env.js`.
+- Wired build gating in `package.json` so `npm run build` fails fast when required Supabase client env vars are absent.
+- This closes the previous gap between documented remediation and enforceable build-time checks.
+
+### Immediate remediation playbook
+1. In Vercel, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` for Production and Preview.
+2. Trigger a fresh deployment (required because Vite injects env at build time).
+3. Smoke-test the live URL and confirm quiz renders instead of configuration error.
+4. Add CI/prebuild guard to fail when required client env vars are absent.
+5. Add monitoring for recurrence (count/error rate of configuration error page views).
+
+### 30/60/90 Plan to Reach 8/10 Across All Categories
+
+Target: raise every scored category to at least **8/10** via a single operating plan that combines reliability, trust, methodology rigor, and monetization execution.
+
+| Category | Current | 8/10 exit criteria |
+|---|---:|---|
+| Core product quality | 6 | Stable end-to-end quiz→results loop with <2% error sessions, no placeholder UX in primary path, and validated completion funnel instrumentation. |
+| Methodology credibility | 5 | Published scoring appendix + version history + reliability metrics (test-retest + calibration sample) linked in-product. |
+| Frontend engineering quality | 7 | Large components refactored, shared tokens/layout primitives adopted, and critical pages maintainable with clear ownership boundaries. |
+| Architecture & maintainability | 6 | Server-authoritative identity/entitlements/results contracts with migration path and typed API boundaries. |
+| Performance | 6 | Web Vitals SLOs met on mobile (LCP/INP/CLS thresholds), charts deferred/split, bundle budgets enforced in CI. |
+| Security & privacy | 3 | Managed auth, server-side entitlement enforcement, strict CORS/rate limits, documented retention/deletion controls. |
+| Analytics readiness | 4 | Production analytics provider live with canonical funnel, UTM persistence, and alert-backed dashboards. |
+| Monetization readiness | 2 | Real checkout + webhook-backed entitlements + failure/renewal/cancellation lifecycle verified in production. |
+| Virality & sharing | 7 | Post-result social sequence optimized with experiment-backed uplift in share CTR and referral sessions. |
+| Conversion to paid | 3 | Free→paid value ladder, proof assets, and pricing UX tested to a measurable paid conversion baseline. |
+| Research/journalist credibility | 5 | Public transparency package (methods, limits, governance, contact path) and editorial review standard shipped. |
+| Deployment readiness | 6 | Required-env preflight checks, release gates, smoke tests, error monitoring, and rollback drills operationalized. |
+| Scalability risks | 5 | Abuse controls + aggregation strategy + cost guardrails in place; no critical hot paths rely on unbounded client writes. |
+
+#### 30 days (stabilize and de-risk)
+1. Fix build/runtime reliability: required env preflight in CI and deploy smoke tests.
+2. Replace client-authoritative auth/entitlements with server-authoritative flow.
+3. Ship baseline monitoring/alerting and incident runbook.
+4. Remove or relabel any non-operational premium claims in production UI.
+
+#### 60 days (monetize and measure)
+1. Launch checkout + webhook lifecycle + entitlement reconciliation.
+2. Instrument full acquisition→activation→conversion funnel with dashboard ownership.
+3. Hit performance budgets on results/share routes and mobile vitals targets.
+4. Introduce experimentation on share prompts and paid offer sequencing.
+
+#### 90 days (credibility and scale)
+1. Publish validation pack (scoring rationale, reliability, calibration cohort notes, changelog).
+2. Ship governance-facing privacy/transparency artifacts and deletion lifecycle verification.
+3. Harden scalability controls (rate limits, anti-abuse, aggregation jobs, cost alarms).
+4. Conduct launch-readiness review requiring all category owners to attest 8/10 criteria pass.
+
 ## Scoring by Category
 
 ### 1) Core product quality — **6/10**

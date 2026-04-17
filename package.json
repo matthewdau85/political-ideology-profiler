@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run verify:client-env && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -15,7 +15,8 @@
     "cap:ios": "vite build && npx cap sync ios",
     "cap:open:android": "npx cap open android",
     "cap:open:ios": "npx cap open ios",
-    "check:bundle": "node scripts/check-bundle-budget.js"
+    "check:bundle": "node scripts/check-bundle-budget.js",
+    "verify:client-env": "node scripts/verify-required-client-env.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.2.0",

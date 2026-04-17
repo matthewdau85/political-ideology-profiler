@@ -44,6 +44,7 @@ Critical server variables:
 - Frontend code can only read variables prefixed with `VITE_`.
 - Vite env variables are injected at build time.
 - Updating env vars in Vercel **requires a redeploy** before the app can use the new values.
+- `npm run build` now fails fast if required client vars are missing (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
 - Never expose server-only secrets (e.g., `SUPABASE_SERVICE_ROLE_KEY`) in frontend code.
 
 ## Deployment (Vercel)
