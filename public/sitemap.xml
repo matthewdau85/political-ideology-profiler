@@ -21,6 +21,31 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ideologycompass.com/figures</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ideologycompass.com/figures/authoritarian-left</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ideologycompass.com/figures/authoritarian-right</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ideologycompass.com/figures/libertarian-left</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ideologycompass.com/figures/libertarian-right</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://ideologycompass.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>

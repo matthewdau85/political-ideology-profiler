@@ -26,6 +26,11 @@ const AboutPage = lazy(() => import('./components/AboutPage'));
 const TermsPage = lazy(() => import('./components/TermsPage'));
 const ContactPage = lazy(() => import('./components/ContactPage'));
 const InsightsPage = lazy(() => import('./components/InsightsPage'));
+const FiguresIndexPage = lazy(() => import('./components/FiguresIndexPage'));
+const AuthoritarianLeftPage = lazy(() => import('./components/AuthoritarianLeftPage'));
+const AuthoritarianRightPage = lazy(() => import('./components/AuthoritarianRightPage'));
+const LibertarianLeftPage = lazy(() => import('./components/LibertarianLeftPage'));
+const LibertarianRightPage = lazy(() => import('./components/LibertarianRightPage'));
 
 function Loading() {
   return (
@@ -56,6 +61,7 @@ export default function App() {
             <Link to="/quiz" className={`nav-link ${location.pathname === '/quiz' ? 'active' : ''}`}>Quiz</Link>
             <Link to="/methodology" className={`nav-link ${location.pathname === '/methodology' ? 'active' : ''}`}>Methodology</Link>
             <Link to="/map" className={`nav-link ${location.pathname === '/map' ? 'active' : ''}`}>Map</Link>
+            <Link to="/figures" className={`nav-link ${location.pathname.startsWith('/figures') ? 'active' : ''}`}>Figures</Link>
             <Link to="/insights" className={`nav-link ${location.pathname === '/insights' ? 'active' : ''}`}>Insights</Link>
             <Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}>
               {session ? 'Profile' : 'Log In'}
@@ -84,6 +90,11 @@ export default function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/map" element={<GlobalIdeologyMap />} />
             <Route path="/insights" element={<InsightsPage />} />
+            <Route path="/figures" element={<FiguresIndexPage />} />
+            <Route path="/figures/authoritarian-left" element={<AuthoritarianLeftPage />} />
+            <Route path="/figures/authoritarian-right" element={<AuthoritarianRightPage />} />
+            <Route path="/figures/libertarian-left" element={<LibertarianLeftPage />} />
+            <Route path="/figures/libertarian-right" element={<LibertarianRightPage />} />
             <Route path="/api/ideology-stats" element={<IdeologyStatsAPI />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -112,6 +123,7 @@ export default function App() {
             <div className="footer-links">
               <Link to="/about">About</Link>
               <Link to="/methodology">Methodology</Link>
+              <Link to="/figures">Figures</Link>
               <Link to="/insights">Insights</Link>
               <Link to="/api/ideology-stats">Stats</Link>
               <Link to="/privacy">Privacy</Link>
